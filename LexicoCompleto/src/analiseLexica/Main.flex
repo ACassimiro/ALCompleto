@@ -1,5 +1,7 @@
 package analiseLexica;
 
+import java.lang.String;
+
 %% 
 
 %standalone
@@ -8,17 +10,19 @@ package analiseLexica;
 
 
 %{
- String ident = ""; 
+ String tokens = ""; 
+ String ErrorLog = "";
 %}
 
 %eof{ 
  System.out.println("Numeros de linhas = " + (yyline+1));
+ System.out.println(ErrorLog);
 %eof}
 
 FimDeLinha = \r|\n|\r\n
 Caracteres = a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|x|z
 Numeros = 0|1|2|3|4|5|6|7|8|9
-Operadores = +|-|/|*|<|>|<=|>=|:|:=
+Operadores = [+|-|/|*|<|>|<=|>=|:|:=]
 Ident = {Caracteres}+({Numeros}|{Caracteres}|_)*
 EspacoEmBranco = {FimDeLinha} | [ \t\f]
 
@@ -49,33 +53,34 @@ EspacoEmBranco = {FimDeLinha} | [ \t\f]
 	{Operadores} { 	}
 
 	[.] { 
-			System.out.println("Erro na linha " + (yyline+1) +": Ponto avulso");
+			ErrorLog += "Erro na linha " + String.valueOf(yyline+1) +": Ponto avulso\n";
 			yybegin(ERR); 
 		}
 
 	{EspacoEmBranco} { }
 
 	[^] {
-			System.out.println("Erro na linha " + (yyline+1) + ": Caractere '" + yytext() + "' invalido"); 
+			ErrorLog += "Erro na linha " + String.valueOf(yyline+1) + ": Caractere '" + yytext() + "' invalido\n"; 
 		}	
+	
 }
 
-ERR {
-	{EspacoEmBranco} { 
-			yybegin(YYINITIAL);
-		}
-	[^] { }
-}
 
 <PAL_RESERVADA>{
 	[.] { 
-			System.out.println("Erro na linha " + (yyline+1) +": Identificadores nao podem conter pontos"); 
+			ErrorLog += "Erro na linha " + String.valueOf(yyline+1) +": Identificadores nao podem conter pontos\n"; 
+		}
+	{EspacoEmBranco} { 
+			yybegin(YYINITIAL);
+		}
+	[^] {
+			ErrorLog += "Erro na linha " + String.valueOf(yyline+1) +": Caractere desconhecido\n";
 		}
 }
 
-VAR {
+<VAR> {
 	[.] { 
-			System.out.println("Erro na linha " + (yyline+1) +": Identificadores nao podem conter pontos");
+			ErrorLog += "Erro na linha " + String.valueOf(yyline+1) +": Identificadores nao podem conter pontos \n";
 			yybegin(ERR); 
 		}
 	{Operadores} { 
@@ -85,11 +90,11 @@ VAR {
 			yybegin(YYINITIAL);
 		}
 	[^] {
-			System.out.println("Erro na linha " + (yyline+1) +": Caractere desconhecido");
+			ErrorLog += "Erro na linha " + String.valueOf(yyline+1) +": Caractere desconhecido\n";
 		}
 }
 
-N_1 {
+<N_1> {
 	{Operadores} {
 			yybegin(YYINITIAL);
 		}
@@ -103,14 +108,14 @@ N_1 {
 		}
 	
 	[^] {
-			System.out.println("Erro na linha " + (yyline+1) + ": Identificadores nao podem começar com numeros");
+			ErrorLog += "Erro na linha " + String.valueOf(yyline+1) + ": Identificadores nao podem comecar com numeros \n";
 			yybegin(ERR);
 		}
 }
 
-N_2 {
+<N_2> {
 	[.] {
-			System.out.println("Erro na linha " + (yyline+1) + ": Valor ja contem um ponto");
+			ErrorLog += "Erro na linha " + String.valueOf(yyline+1) + ": Valor ja contem um ponto\n";
 			yybegin(ERR);
 		}
 		
@@ -121,7 +126,15 @@ N_2 {
 	{Numeros} { }
 	
 	[^] {
-			System.out.println("Erro na linha " + (yyline+1) + ": Identificadores nao podem começar com numeros ou conter pontos");
+			ErrorLog += "Erro na linha " + String.valueOf(yyline+1) + ": Identificadores nao podem começar com numeros ou conter pontos\n";
 			yybegin(ERR);
 		}
+}
+
+
+<ERR> {
+	{EspacoEmBranco} { 
+			yybegin(YYINITIAL);
+		}
+	[^] { }
 }
