@@ -1,0 +1,21 @@
+Numeros de linhas = 9
+
+Token (Linha 1): {program - Palavra Reservada}
+Token (Linha 1): {teste - Identificador}
+Token (Linha 1): {; - Delimitador}
+Token (Linha 3): {var - Palavra Reservada}
+Token (Linha 4): {valor1 - Identificador}
+Token (Linha 4): {: - Delimitador}
+Token (Linha 4): {integer - Palavra Reservada}
+Token (Linha 4): {; - Delimitador}
+Token (Linha 5): {valor2 - Identificador}
+Token (Linha 5): {: - Delimitador}
+Token (Linha 5): {real - Palavra Reservada}
+Token (Linha 5): {; - Delimitador}
+Token (Linha 6): {begin - Palavra Reservada}
+Token (Linha 7): {valor1 - Identificador}
+Token (Linha 7): {:= - Delimitador}
+Token (Linha 8): {end - Palavra Reservada}
+Token (Linha 8): {. - Delimitador}
+
+Erro na linha 7: Identificadores nao podem comecar com numeros 
