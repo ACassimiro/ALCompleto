@@ -204,7 +204,7 @@ EspacoEmBranco = {FimDeLinha} | [ \t\f]
 			yybegin(YYINITIAL);
 		}
 		
-	{Numeros} {
+	{Numeros}+ {
 			token += "Token (Linha " + String.valueOf(yyline+1) + "): {" + temp + "." + yytext() + " - Numero Inteiro}\n";
 			yybegin(YYINITIAL);
 		}
