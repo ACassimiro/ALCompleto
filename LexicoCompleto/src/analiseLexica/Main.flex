@@ -137,6 +137,12 @@ EspacoEmBranco = {FimDeLinha} | [ \t\f]
 	{EspacoEmBranco} { 
 			yybegin(YYINITIAL);
 		}
+	
+	{Operadores} { 
+			token += "Token (Linha " + String.valueOf(yyline+1) + "): {" + yytext() + " - Delimitador}\n";	
+			yybegin(YYINITIAL);
+		}
+	
 		
 	[^] {
 			ErrorLog += "Erro na linha " + String.valueOf(yyline+1) +": Caractere desconhecido\n";
