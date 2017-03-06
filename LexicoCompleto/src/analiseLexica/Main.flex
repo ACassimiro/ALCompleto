@@ -103,7 +103,7 @@ EspacoEmBranco = {FimDeLinha} | [ \t\f]
 			yybegin(VAR);
 		}
 	
-	{Numeros} { temp = yytext(); yybegin(N_1); }
+	{Numeros}+ { temp = yytext(); yybegin(N_1); }
 	
 	"//" { yybegin(COM_LINHA); }
 	
@@ -185,7 +185,7 @@ EspacoEmBranco = {FimDeLinha} | [ \t\f]
 		}
 	
 	[^] {
-			ErrorLog += "Erro na linha " + String.valueOf(yyline+1) + ": Identificadores nao podem comecar com numeros \n";
+			ErrorLog += "Erro na linha " + String.valueOf(yyline+1) + ": Identificadores nao podem comecar com numeros (" + temp + " - " + yytext() + ")\n";
 			yybegin(ERR);
 		}
 }
