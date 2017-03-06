@@ -537,7 +537,8 @@ class Main {
   private void zzDoEOF() {
     if (!zzEOFDone) {
       zzEOFDone = true;
-    	if(flagComent == 1) {
+    
+	if(flagComent == 1) {
 		ErrorLog += "Erro na linha " + initComent + ": Comentario de bloco nao fechado \n";
 	}
 
@@ -557,6 +558,7 @@ class Main {
 	System.out.println("Numeros de linhas = " + (yyline+1));
 	System.out.println("\n" + token);
 	System.out.println("\n" + ErrorLog);
+	
 
     }
   }

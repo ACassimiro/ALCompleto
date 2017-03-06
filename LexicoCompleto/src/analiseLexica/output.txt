@@ -15,7 +15,8 @@ Token (Linha 5): {; - Delimitador}
 Token (Linha 6): {begin - Palavra Reservada}
 Token (Linha 7): {valor1 - Identificador}
 Token (Linha 7): {:= - Delimitador}
+Token (Linha 7): {10 - Numero Inteiro}
+Token (Linha 7): {; - Delimitador}
 Token (Linha 8): {end - Palavra Reservada}
 Token (Linha 8): {. - Delimitador}
 
-Erro na linha 7: Identificadores nao podem comecar com numeros 

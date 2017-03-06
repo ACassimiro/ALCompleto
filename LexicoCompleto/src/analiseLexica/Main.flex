@@ -21,6 +21,7 @@ import java.io.*;
 %}
 
 %eof{ 
+
 	if(flagComent == 1) {
 		ErrorLog += "Erro na linha " + initComent + ": Comentario de bloco nao fechado \n";
 	}
@@ -41,6 +42,7 @@ import java.io.*;
 	System.out.println("Numeros de linhas = " + (yyline+1));
 	System.out.println("\n" + token);
 	System.out.println("\n" + ErrorLog);
+	
 %eof}
 
 FimDeLinha = \r|\n|\r\n
