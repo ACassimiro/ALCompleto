@@ -7,13 +7,19 @@ public class NonTerminal {
 	private ArrayList<String> generates; //Keeps what the non-terminal generates
 	private ArrayList<Character> leadsTo; //Keeps the non-terminals that this nt leads to
 
-	
+	//***************************************
+	// CONSTRUCTOR
+	// **************************************
 	public NonTerminal (char name){
-		name = this.name;
+		this.name = name;
 		generates = new ArrayList<String>();
 		leadsTo = new ArrayList<Character>();
 	}
 	
+	//***************************************
+	// Add itens and check if they are already
+	// contained in "leadsTo"
+	// **************************************
 	public boolean leadsToContains(char character){
 		if (leadsTo.contains(character)){
 			return true;
@@ -26,6 +32,10 @@ public class NonTerminal {
 		leadsTo.add(character);
 	}
 	
+	//***************************************
+	// Add itens and check if they are already
+	// contained in "generates"
+	// **************************************
 	public boolean generatesContains(String sentence){
 		if (generates.contains(sentence)){
 			return true;
@@ -38,7 +48,7 @@ public class NonTerminal {
 		generates.add(sentence);
 	}
 	
-	//****************************************
+	//***************************************
 	// GETTERS AND SETTERS
 	// **************************************
 	public ArrayList<String> getGenerates() {
