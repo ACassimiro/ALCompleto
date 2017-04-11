@@ -139,7 +139,7 @@ class Remover {
 		ntList = findPath(ntList);
 		
 		Collections.reverse(ntList);
-		
+		 
 		if (ntList.size() > 0) {
 			
 			for(NonTerminal nonTerm : ntList){
