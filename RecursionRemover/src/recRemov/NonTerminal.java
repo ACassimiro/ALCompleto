@@ -34,7 +34,7 @@ public class NonTerminal {
 	
 	//***************************************
 	// Add itens and check if they are already
-	// contained in "generates"
+	// contained in "generates "
 	// **************************************
 	public boolean generatesContains(String sentence){
 		if (generates.contains(sentence)){

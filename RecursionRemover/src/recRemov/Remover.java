@@ -169,7 +169,7 @@ class Remover {
 			System.out.print(b + " ");
 		}
 		
-		
+		  
 		NonTerminal aux = null;
 		
 	}
