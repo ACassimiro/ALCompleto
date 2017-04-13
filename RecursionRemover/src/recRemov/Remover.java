@@ -124,54 +124,97 @@ class Remover {
 		return path;
 	}
 	
+	public static void removeRecursion(ArrayList<NonTerminal> ntList){
+		String prefix = "";
+		String sufix = "";
+		char currentName;
+		NonTerminal dashedNT = new NonTerminal('X');
+		
+		dashedNT.leadsToAdd('X');
+		
+		Collections.reverse(ntList);
+		
+		int auxSizeCounter = 0;
+		boolean isFirst = true;
+		if (ntList.size() > 1) {
+			
+			for(NonTerminal nonTerm : ntList){
+				if(isFirst){
+					isFirst = false;
+					continue;
+				}
+				
+				
+				// System.out.println("Now on: " + nonTerm.getName());
+				
+				currentName = ntList.get(auxSizeCounter).getName();
+				
+				for(String generates : nonTerm.getGenerates()){
+					// System.out.println("Searching for: " + currentName + " in: " + generates);
+					
+					if(generates.indexOf(currentName) >= 0){
+						sufix += generates.substring(generates.indexOf(currentName) + 1, generates.length());
+						break;
+					} 
+				}
+
+				auxSizeCounter++;
+				
+				if(auxSizeCounter == ntList.size())
+					break;
+				
+			}	
+			
+			currentName = ntList.get(ntList.size() - 1).getName();
+			
+			for(String generates : ntList.get(0).getGenerates()){
+				//System.out.println("Searching for: " + currentName + " in: " + generates);
+				
+				if(generates.indexOf(currentName) >= 0){
+					sufix += generates.substring(generates.indexOf(currentName) + 1, generates.length());
+					break;
+				} 
+			}
+				
+		}
+		
+		dashedNT.generatesAdd(sufix + "X");
+		
+		currentName = ntList.get(0).getName();
+		for(String generates : ntList.get(0).getGenerates()){
+			// System.out.println("Searching for: " + currentName + " in: " + generates);
+			
+			if(generates.indexOf(currentName) >= 0){
+				sufix = generates.substring(generates.indexOf(currentName) + 1, generates.length());
+				break;
+			} 
+		}
+	
+		dashedNT.generatesAdd(sufix + "X");
+		dashedNT.generatesAdd("&" );
+		
+		Collections.reverse(ntList);
+		ntList.add(dashedNT);
+	
+	}
+	
+	
 	public static void main (String []args){ 
 		String content;
 		ArrayList<NonTerminal> ntList = new ArrayList<NonTerminal>();
 		ArrayList<Character> path = new ArrayList<Character>();
-		ArrayList<String> beta = new ArrayList<String>();
 		
-		content = getInput("src/files/input2.txt");
+		content = getInput("src/files/input3.txt");
 
 		ntParser(content, ntList);
 
-		// printNTList(ntList);
+
 
 		ntList = findPath(ntList);
-		
-		Collections.reverse(ntList);
-		 
-		if (ntList.size() > 0) {
-			
-			for(NonTerminal nonTerm : ntList){
-				
-				for(String generates : nonTerm.getGenerates()){
-					
-					if(generates.indexOf(ntList.get(ntList.size() - 1).getName()) >= 0){
-						for(String gen : nonTerm.getGenerates()){
-							if(gen.indexOf(ntList.get(ntList.size() - 1).getName()) >= 0){
-								;
-							} else {
-								beta.add(generates.substring(generates.indexOf(ntList.get(ntList.size() - 1).getName()) + 1, generates.length()));
-							}
 
-						}
-						
-					} 
-					
-				}
-				
-			}	
-			
-		}
+		removeRecursion(ntList);
 		
-		System.out.println(":");
-		for(String b : beta){
-			System.out.print(b + " ");
-		}
-		
-		  
-		NonTerminal aux = null;
-		
+		printNTList(ntList);
 	}
 }
 
