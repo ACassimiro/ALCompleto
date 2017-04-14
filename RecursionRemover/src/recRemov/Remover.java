@@ -128,9 +128,11 @@ class Remover {
 		String prefix = "";
 		String sufix = "";
 		char currentName;
+		String lastRecursionSufix = "";
 		NonTerminal dashedNT = new NonTerminal('X');
-		
+		NonTerminal replace = null;
 		dashedNT.leadsToAdd('X');
+		String auxNextPrefix;
 		
 		Collections.reverse(ntList);
 		
@@ -140,18 +142,21 @@ class Remover {
 			
 			for(NonTerminal nonTerm : ntList){
 				if(isFirst){
+					for(String generates : nonTerm.getGenerates()){
+						currentName = ntList.get(ntList.size() - 1).getName();
+						if(generates.indexOf(currentName) >= 0){
+							lastRecursionSufix = generates.substring(generates.indexOf(currentName) + 1, generates.length());
+							break;
+						} 
+					}
+
 					isFirst = false;
 					continue;
 				}
 				
-				
-				// System.out.println("Now on: " + nonTerm.getName());
-				
 				currentName = ntList.get(auxSizeCounter).getName();
 				
 				for(String generates : nonTerm.getGenerates()){
-					// System.out.println("Searching for: " + currentName + " in: " + generates);
-					
 					if(generates.indexOf(currentName) >= 0){
 						sufix += generates.substring(generates.indexOf(currentName) + 1, generates.length());
 						break;
@@ -168,8 +173,6 @@ class Remover {
 			currentName = ntList.get(ntList.size() - 1).getName();
 			
 			for(String generates : ntList.get(0).getGenerates()){
-				//System.out.println("Searching for: " + currentName + " in: " + generates);
-				
 				if(generates.indexOf(currentName) >= 0){
 					sufix += generates.substring(generates.indexOf(currentName) + 1, generates.length());
 					break;
@@ -182,8 +185,6 @@ class Remover {
 		
 		currentName = ntList.get(0).getName();
 		for(String generates : ntList.get(0).getGenerates()){
-			// System.out.println("Searching for: " + currentName + " in: " + generates);
-			
 			if(generates.indexOf(currentName) >= 0){
 				sufix = generates.substring(generates.indexOf(currentName) + 1, generates.length());
 				break;
@@ -191,9 +192,62 @@ class Remover {
 		}
 	
 		dashedNT.generatesAdd(sufix + "X");
-		dashedNT.generatesAdd("&" );
-		
+		dashedNT.generatesAdd("&" );		
+				
 		Collections.reverse(ntList);
+		
+		replace = new NonTerminal(ntList.get(ntList.size() - 1).getName());
+		replace.leadsToAdd('X');
+		auxSizeCounter = 1;
+		prefix = "";
+		if (ntList.size() > 1) {
+			
+			for(NonTerminal nonTerm : ntList){
+				auxNextPrefix = "";
+				currentName = ntList.get(auxSizeCounter).getName();
+				for(String generates : nonTerm.getGenerates()){
+					if(generates.indexOf(currentName) < 0){
+						replace.generatesAdd(generates + prefix + lastRecursionSufix + "X");
+					} else {
+						auxNextPrefix = generates.substring(generates.indexOf(currentName) + 1, generates.length());
+					}			
+				}
+				
+				for(char leadsTo : nonTerm.getLeadsTo()){
+					if(leadsTo == currentName || replace.leadsToContains(leadsTo)){
+						continue;
+					} else {
+						replace.leadsToAdd(leadsTo);
+					}
+				}
+				
+				if(auxSizeCounter++ == ntList.size() - 1){
+					break;
+				}				
+				
+				prefix = auxNextPrefix + prefix;
+			}	
+			
+			for(String generates : ntList.get(ntList.size() - 1).getGenerates()){
+				if(generates.indexOf(ntList.get(ntList.size() - 1).getName()) < 0 || generates.indexOf(ntList.get(0).getName()) < 0){
+					replace.generatesAdd(generates + "X");
+				}			
+			}
+			
+			for(char leadsTo : ntList.get(ntList.size() - 1).getLeadsTo()){
+				if(leadsTo == currentName || replace.leadsToContains(leadsTo) || replace.leadsToContains(ntList.get(0).getName()) || replace.leadsToContains(ntList.get(ntList.size() - 1).getName())){
+					continue;
+				} else {
+					replace.leadsToAdd(leadsTo);
+				}
+			}
+			
+		}
+		 
+		ntList.remove(ntList.size() - 1);
+		
+		ntList.add(replace);
+		
 		ntList.add(dashedNT);
 	
 	}
@@ -202,13 +256,10 @@ class Remover {
 	public static void main (String []args){ 
 		String content;
 		ArrayList<NonTerminal> ntList = new ArrayList<NonTerminal>();
-		ArrayList<Character> path = new ArrayList<Character>();
 		
 		content = getInput("src/files/input3.txt");
 
 		ntParser(content, ntList);
-
-
 
 		ntList = findPath(ntList);
 
