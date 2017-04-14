@@ -1,0 +1,5 @@
+S - Aa | b | c | d
+A - Bc | d
+B - Ce | f
+C - bhX | chX | dhX | dahX | fcahX | CgX | ShX | iX
+X - ecahX | gX | &

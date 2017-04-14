@@ -1,0 +1,4 @@
+S - Aa | b
+A - Bc | d
+B - bfX | dafX | BeX | SfX | gX
+X - cafX | eX | &
