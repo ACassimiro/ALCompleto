@@ -1,4 +1,4 @@
-package analiseSintatica;
+package analiseSemantica;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -10,21 +10,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 
-//try{
-//    FileWriter out = new FileWriter("src/files/output.txt");
-//
-//    out.write("linhas");
-//    out.close();
-//} catch (Exception e){
-//    // e.printStackTrace();
-//    System.out.println("Nao foi possivel operar no arquivo de output\n");
-//}
-
-public class ANSintatica {
-	
-	 private static void anSintatica(ArrayList<Token> tokens){
-		 
-	 }
+public class ANSemantica {
 
 	 private static ArrayList<Token> obterTokens (String path){
 		Scanner input = null;
@@ -71,7 +57,6 @@ public class ANSintatica {
 		String path = args[0];
 	
 		listaTokens = obterTokens(path);
-		
 		
 	}
 }

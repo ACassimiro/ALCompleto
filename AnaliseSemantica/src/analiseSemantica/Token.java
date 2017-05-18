@@ -1,4 +1,4 @@
-package analiseSintatica;
+package analiseSemantica;
 
 public class Token {
 	private String nome, simbolo;
