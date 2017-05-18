@@ -27,12 +27,13 @@ import java.io.*;
 	}
 
 	try{
-	    FileWriter out = new FileWriter("src/analiseLexica/output.txt");
+	    FileWriter out = new FileWriter("src/files/output.txt");
 	
-	    out.write("Numeros de linhas = " + (yyline+1) + "\n");
+	    out.write("linhas = " + (yyline+1) + "\n");
+	    out.write("\nTabela:");
 		out.write("\n" + token);
 		out.write("\n" + ErrorLog);
-	
+		
 	    out.close();
 	} catch (Exception e){
 	    // e.printStackTrace();
@@ -40,7 +41,8 @@ import java.io.*;
 	}
 
 	System.out.println("Numeros de linhas = " + (yyline+1));
-	System.out.println("\n" + token);
+	System.out.println("\nTabela:");
+	System.out.println(token);
 	System.out.println("\n" + ErrorLog);
 	
 %eof}
@@ -58,50 +60,50 @@ EspacoEmBranco = {FimDeLinha} | [ \t\f]
 
 <YYINITIAL>{
 	"program" { 
-			token += "Token (Linha " + String.valueOf(yyline+1) + "): {" + yytext() + " - Palavra Reservada}\n";
+			token +=   String.valueOf(yyline+1) + " : " + yytext() + " - pal_res\n";
 			yybegin(PAL_RESERVADA); }
 	"var" { 
-			token += "Token (Linha " + String.valueOf(yyline+1) + "): {" + yytext() + " - Palavra Reservada}\n";
+			token +=   String.valueOf(yyline+1) + " : " + yytext() + " - pal_res\n";
 			yybegin(PAL_RESERVADA); }
 	"integer" { 
-			token += "Token (Linha " + String.valueOf(yyline+1) + "): {" + yytext() + " - Palavra Reservada}\n";
+			token +=   String.valueOf(yyline+1) + " : " + yytext() + " - pal_res\n";
 			yybegin(PAL_RESERVADA); }
 	"if" { 
-			token += "Token (Linha " + String.valueOf(yyline+1) + "): {" + yytext() + " - Palavra Reservada}\n";
+			token +=   String.valueOf(yyline+1) + " : " + yytext() + " - pal_res\n";
 			yybegin(PAL_RESERVADA); }
 	"then" { 
-			token += "Token (Linha " + String.valueOf(yyline+1) + "): {" + yytext() + " - Palavra Reservada}\n";
+			token +=   String.valueOf(yyline+1) + " : " + yytext() + " - pal_res\n";
 			yybegin(PAL_RESERVADA); }
 	"else" { 
-			token += "Token (Linha " + String.valueOf(yyline+1) + "): {" + yytext() + " - Palavra Reservada}\n";
+			token +=   String.valueOf(yyline+1) + " : " + yytext() + " - pal_res\n";
 			yybegin(PAL_RESERVADA); }
 	"end" { 
-			token += "Token (Linha " + String.valueOf(yyline+1) + "): {" + yytext() + " - Palavra Reservada}\n";
+			token +=   String.valueOf(yyline+1) + " : " + yytext() + " - pal_res\n";
 			yybegin(PAL_RESERVADA); }
 	"real" { 
-			token += "Token (Linha " + String.valueOf(yyline+1) + "): {" + yytext() + " - Palavra Reservada}\n";
+			token +=   String.valueOf(yyline+1) + " : " + yytext() + " - pal_res\n";
 			yybegin(PAL_RESERVADA); }
 	"while" { 
-			token += "Token (Linha " + String.valueOf(yyline+1) + "): {" + yytext() + " - Palavra Reservada}\n";
+			token +=   String.valueOf(yyline+1) + " : " + yytext() + " - pal_res\n";
 			yybegin(PAL_RESERVADA); }
 	"not" { 
-			token += "Token (Linha " + String.valueOf(yyline+1) + "): {" + yytext() + " - Palavra Reservada}\n";
+			token +=   String.valueOf(yyline+1) + " : " + yytext() + " - pal_res\n";
 			yybegin(PAL_RESERVADA); }
 	"do" { 
-			token += "Token (Linha " + String.valueOf(yyline+1) + "): {" + yytext() + " - Palavra Reservada}\n";
+			token +=   String.valueOf(yyline+1) + " : " + yytext() + " - pal_res\n";
 			yybegin(PAL_RESERVADA); }
 	"procedure" { 
-			token += "Token (Linha " + String.valueOf(yyline+1) + "): {" + yytext() + " - Palavra Reservada}\n";
+			token +=   String.valueOf(yyline+1) + " : " + yytext() + " - pal_res\n";
 			yybegin(PAL_RESERVADA); }
 	"boolean" { 
-			token += "Token (Linha " + String.valueOf(yyline+1) + "): {" + yytext() + " - Palavra Reservada}\n";
+			token +=   String.valueOf(yyline+1) + " : " + yytext() + " - pal_res\n";
 			yybegin(PAL_RESERVADA); }
 	"begin" { 
-			token += "Token (Linha " + String.valueOf(yyline+1) + "): {" + yytext() + " - Palavra Reservada}\n";
+			token +=   String.valueOf(yyline+1) + " : " + yytext() + " - pal_res\n";
 			yybegin(PAL_RESERVADA); }
 	
 	{Ident} { 
-			token += "Token (Linha " + String.valueOf(yyline+1) + "): {" + yytext() + " - Identificador}\n";
+			token += String.valueOf(yyline+1) + " : " + yytext() + " - identificador\n";
 			yybegin(VAR);
 		}
 	
@@ -111,10 +113,10 @@ EspacoEmBranco = {FimDeLinha} | [ \t\f]
 	
 	"{" { estadoAtual = "YYINITIAL"; initComent = yyline + 1; flagComent = 1; yybegin(COM_BLOCO); }
 	
-	{Operadores} { token += "Token (Linha " + String.valueOf(yyline+1) + "): {" + yytext() + " - Delimitador}\n";	}
+	{Operadores} { token +=   String.valueOf(yyline+1) + " : " + yytext() + " - delimitador\n";	}
 
 	[.|;|:|,|(|)] { 
-			token += "Token (Linha " + String.valueOf(yyline+1) + "): {" + yytext() + " - Delimitador}\n";
+			token +=   String.valueOf(yyline+1) + " : " + yytext() + " - delimitador\n";
 			//ErrorLog += "Erro na linha " + String.valueOf(yyline+1) +": Ponto avulso\n";
 			//yybegin(ERR); 
 		}
@@ -130,7 +132,7 @@ EspacoEmBranco = {FimDeLinha} | [ \t\f]
 
 <PAL_RESERVADA>{
 	[.|;|:|,|(|)] { 
-			token += "Token (Linha " + String.valueOf(yyline+1) + "): {" + yytext() + " - Delimitador}\n";
+			token +=   String.valueOf(yyline+1) + " : " + yytext() + " - delimitador\n";
 			yybegin(YYINITIAL);
 		}
 		
@@ -139,7 +141,7 @@ EspacoEmBranco = {FimDeLinha} | [ \t\f]
 		}
 	
 	{Operadores} { 
-			token += "Token (Linha " + String.valueOf(yyline+1) + "): {" + yytext() + " - Delimitador}\n";	
+			token +=   String.valueOf(yyline+1) + " : " + yytext() + " - delimitador\n";	
 			yybegin(YYINITIAL);
 		}
 	
@@ -151,14 +153,14 @@ EspacoEmBranco = {FimDeLinha} | [ \t\f]
 
 <VAR> {
 	[.|;|:|,|(|)] { 
-			token += "Token (Linha " + String.valueOf(yyline+1) + "): {" + yytext() + " - Delimitador}\n";
+			token +=   String.valueOf(yyline+1) + " : " + yytext() + " - delimitador\n";
 			yybegin(YYINITIAL);
-			//ErrorLog += "Erro na linha " + String.valueOf(yyline+1) +": Identificadores nao podem conter delimitadores \n";
+			//ErrorLog += "Erro na linha " + String.valueOf(yyline+1) +": identificadores nao podem conter delimitadores \n";
 			//yybegin(ERR); 
 		}
 		
 	{Operadores} { 
-			token += "Token (Linha " + String.valueOf(yyline+1) + "): {" + yytext() + " - Operador}\n";
+			token += String.valueOf(yyline+1) + " : " + yytext() + " - operador\n";
 			yybegin(YYINITIAL);
 		}
 		
@@ -173,8 +175,8 @@ EspacoEmBranco = {FimDeLinha} | [ \t\f]
 
 <N_1> {
 	{Operadores} {
-			token += "Token (Linha " + String.valueOf(yyline+1) + "): {" + temp + " - Numero Inteiro}\n";
-			token += "Token (Linha " + String.valueOf(yyline+1) + "): {" + yytext() + " - Operador}\n";
+			token += String.valueOf(yyline+1) + " : " + temp + " - num_int\n";
+			token += String.valueOf(yyline+1) + " : " + yytext() + " - operador\n";
 			yybegin(YYINITIAL);
 		}
 	
@@ -183,8 +185,8 @@ EspacoEmBranco = {FimDeLinha} | [ \t\f]
 		}
 		
 	[;|:|,|(|)] {
-			token += "Token (Linha " + String.valueOf(yyline+1) + "): {" + temp + " - Numero Inteiro}\n";
-			token += "Token (Linha " + String.valueOf(yyline+1) + "): {" + yytext() + " - Delimitador}\n";
+			token += String.valueOf(yyline+1) + " : " + temp + " - num_int\n";
+			token += String.valueOf(yyline+1) + " : " + yytext() + " - delimitador\n";
 			yybegin(YYINITIAL);
 		}
 	
@@ -193,30 +195,30 @@ EspacoEmBranco = {FimDeLinha} | [ \t\f]
 		}
 	
 	[^] {
-			ErrorLog += "Erro na linha " + String.valueOf(yyline+1) + ": Identificadores nao podem comecar com numeros (" + temp + " - " + yytext() + ")\n";
+			ErrorLog += "Erro na linha " + String.valueOf(yyline+1) + ": identificadores nao podem comecar com numeros (" + temp + " - " + yytext() + ")\n";
 			yybegin(ERR);
 		}
 }
 
 <N_2> {
 	[.|;|:|,|(|)] {
-			token += "Token (Linha " + String.valueOf(yyline+1) + "): {" + yytext() + " - Delimitador}\n";
+			token += String.valueOf(yyline+1) + " : " + yytext() + " - delimitador\n";
 			yybegin(YYINITIAL);
 		}
 		
 	{Operadores} {
-			ErrorLog += "Erro na linha " + String.valueOf(yyline+1) + ": Delimitadores em um numero tipo float incompleto \n";
-			token += "Token (Linha " + String.valueOf(yyline+1) + "): {" + yytext() + " - Operador}\n";
+			ErrorLog += "Erro na linha " + String.valueOf(yyline+1) + ": delimitadores em um numero tipo float incompleto \n";
+			token += String.valueOf(yyline+1) + " : " + yytext() + " - operador\n";
 			yybegin(YYINITIAL);
 		}
 		
 	{Numeros}+ {
-			token += "Token (Linha " + String.valueOf(yyline+1) + "): {" + temp + "." + yytext() + " - Numero Inteiro}\n";
+			token += String.valueOf(yyline+1) + " : " + temp + "." + yytext() + " - num_float\n";
 			yybegin(YYINITIAL);
 		}
 		
 	[^] {
-			ErrorLog += "Erro na linha " + String.valueOf(yyline+1) + ": Identificadores nao podem começar com numeros ou conter pontos\n";
+			ErrorLog += "Erro na linha " + String.valueOf(yyline+1) + ": identificadores nao podem começar com numeros ou conter pontos\n";
 			yybegin(ERR);
 		}
 }
