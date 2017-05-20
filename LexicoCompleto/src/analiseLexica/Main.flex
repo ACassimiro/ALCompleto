@@ -213,7 +213,7 @@ EspacoEmBranco = {FimDeLinha} | [ \t\f]
 		}
 		
 	{Numeros}+ {
-			token += String.valueOf(yyline+1) + " : " + temp + "." + yytext() + " - num_float\n";
+			token += String.valueOf(yyline+1) + " : " + temp + "." + yytext() + " - num_real\n";
 			yybegin(YYINITIAL);
 		}
 		

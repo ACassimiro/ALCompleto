@@ -545,7 +545,7 @@ class Main {
 	}
 
 	try{
-	    FileWriter out = new FileWriter("src/analiseLexica/output.txt");
+	    FileWriter out = new FileWriter("src/files/output.txt");
 	
 	    out.write("linhas = " + (yyline+1) + "\n");
 	    out.write("\nTabela:");
@@ -788,7 +788,7 @@ class Main {
             }
           case 41: break;
           case 17: 
-            { token += String.valueOf(yyline+1) + " : " + temp + "." + yytext() + " - num_float\n";
+            { token += String.valueOf(yyline+1) + " : " + temp + "." + yytext() + " - num_real\n";
 			yybegin(YYINITIAL);
             }
           case 42: break;

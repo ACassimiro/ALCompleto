@@ -27,17 +27,61 @@ public class ANSintatica {
 		System.exit(0);
 	}
 	
+	private static int lista_de_expressoes(ArrayList<Token> tokens, int count){
+		ArrayList<String> termoSim = new ArrayList<String>();
+		ArrayList<String> termoNome = new ArrayList<String>();
+		ArrayList<String> sinal = new ArrayList<String>();
+		ArrayList<String> op_adt = new ArrayList<String>();
+		String atual = "";
+				
+		termoSim.add("identificador"); termoSim.add("num_int"); termoSim.add("num_real");
+		termoNome.add("true"); termoNome.add("false"); termoNome.add("("); termoNome.add("not"); termoNome.add(",");
+		sinal.add("+"); sinal.add("-");
+		op_adt.add("+"); op_adt.add("-"); op_adt.add("or");
+		
+		while (true) {
+			
+			if( termoSim.contains(tokens.get(count).getSimbolo()) || termoNome.contains(tokens.get(count).getNome()) || sinal.contains(tokens.get(count).getNome())) {
+				if((atual.isEmpty() || atual.equals(",")) && !tokens.get(count).getNome().equals(",")){
+					count = expressao_simples(tokens, count);
+					atual = "expressao";
+				} else if(!atual.equals("expressao") && tokens.get(count).getNome().equals(",")) {
+					erro("Expressao esperada na linha " + tokens.get(count));
+				} else if(atual.equals("expressao") && !tokens.get(count).getNome().equals(",")) {
+					erro("Token de separacao esperado na linha " + tokens.get(count));
+				} else if(atual.equals("expressao") && tokens.get(count).getNome().equals(",")) {
+					count++;
+					atual = ",";
+				} 
+			} 
+			
+			break;
+		}
+		
+		
+		return count;
+	}
+	
 	private static int fator(ArrayList<Token> tokens, int count){
 		if(tokens.get(count).getSimbolo().equals("identificador")){
 			count++;
 			if(tokens.get(count).getNome().equals("(")){					
-				//count = lista_de_expressoes(tokens,count++);
+				count = lista_de_expressoes(tokens,count++);
 				if(!tokens.get(count++).getNome().equals(")"))
 					erro("Esperado token fecha parentese na linha " + tokens.get(--count).getLinha());
 			}
-		} else if (tokens.get(count).getSimbolo().equals("")){
-			//TODO: ADICIONAR TODAS AS OPCOES DE FATORES
+		} else if (tokens.get(count).getSimbolo().equals("num_int") || tokens.get(count).getSimbolo().equals("num_real")){
+			count++;
+		} else if ( tokens.get(count).getNome().equals("true") || tokens.get(count).getNome().equals("false") ){
+			count++;			
+		} else if ( tokens.get(count).getNome().equals("true") || tokens.get(count).getNome().equals("false") ){
+			count++;			
+		} else if ( tokens.get(count).getNome().equals("not") ) {
+			count = fator(tokens, ++count);
+		} else if ( tokens.get(count).getNome().equals("(") ) {
+			count = expressao(tokens, ++count);
 		}
+		
 		return count;
 	}
 	
@@ -80,40 +124,85 @@ public class ANSintatica {
 		ArrayList<String> op_adt = new ArrayList<String>();
 		String atual = "";
 		
-		//TODO: RESOLVER QUESTAO DO OP_ADITIVO NA EXPRESSAO_SIMPLES
-		
 		termoSim.add("identificador"); termoSim.add("num_int"); termoSim.add("num_real");
 		termoNome.add("true"); termoNome.add("false"); termoNome.add("("); termoNome.add("not");
 		sinal.add("+"); sinal.add("-");
 		op_adt.add("+"); op_adt.add("-"); op_adt.add("or");
 		
 		while(true){
-			if( termoSim.contains(tokens.get(count).getSimbolo()) || termoNome.contains(tokens.get(count).getNome())){
+			if(atual.equals("termo") && termoSim.contains(tokens.get(count).getSimbolo()) || termoNome.contains(tokens.get(count).getNome())){
+				erro("Termo seguido de termo na linha " + tokens.get(count).getLinha());
+			} else if(atual.equals("op_adt") && op_adt.contains(tokens.get(count).getNome()) ){
+				erro("Operador aditivo seguido de operador aditivo na linha " + tokens.get(count).getLinha());
+			}
+						
+			if( termoSim.contains(tokens.get(count).getSimbolo()) || termoNome.contains(tokens.get(count).getNome()) && (atual.isEmpty() || atual.equals("op_adt")) ){
 				count = termo(tokens, count);
+				atual = "termo";
 				continue;
-			} else if (sinal.contains(tokens.get(count).getNome())){
+			} 
+			
+			if (sinal.contains(tokens.get(count).getNome())){
 				count++;
 				if( !termoSim.contains(tokens.get(count).getSimbolo()) || !termoNome.contains(tokens.get(count).getNome()))
 					erro("Esperado fator depois de sinal na linha " + tokens.get(count).getLinha());
 				
 				count = termo(tokens, count);	
+				atual = "termo";
 				continue;
-			} else if (op_adt.contains(tokens.get(count).getNome())){
+			} 
+			
+			if (op_adt.contains(tokens.get(count).getNome())){
+				count++;
+				if( !termoSim.contains(tokens.get(count).getSimbolo()) || !termoNome.contains(tokens.get(count).getNome()))
+					erro("Esperado fator depois de sinal na linha " + tokens.get(count).getLinha());
 				
-			} else {
-				break;
+				count = termo(tokens, count);
+				atual = "op_adt";
+				continue;
 			}
+			
+			break;
+			
 		}
-		
-		
-		
 		
 		return count;
 	}
 	
 	private static int expressao(ArrayList<Token> tokens, int count){
+		String atual = "";
+		ArrayList<String> op_rel = new ArrayList<String>();
+		int auxCount;
+
+		while(true){
+			auxCount = count;
+
+			if(op_rel.contains(tokens.get(count).getNome()) && (atual.equals("op_rel") && atual.isEmpty())){
+				erro("Token nao esperado na linha " + tokens.get(count).getLinha());
+			} else if (!op_rel.contains(tokens.get(count).getNome()) && (atual.equals("expressao") || atual.isEmpty())) {
+				erro("Token nao esperado na linha " + tokens.get(count).getLinha());
+			}
+			
+			if(op_rel.contains(tokens.get(count).getNome()) && (!atual.equals("op_rel") && !atual.isEmpty())){
+				atual = "op_rel";
+				count++;
+			} else {
+				atual = "expressao";
+				count = expressao_simples(tokens, ++count);	
+			}
+			
+			if(auxCount == count)
+				break;
+		}
 		
-		count = expressao_simples(tokens, count);
+		return count;
+	}
+	
+	private static int parte_else(ArrayList<Token> tokens, int count) {
+		
+		if(tokens.get(count).getNome().equals("else")){
+			count = comando(tokens, ++count);
+		}
 		
 		return count;
 	}
@@ -127,12 +216,33 @@ public class ANSintatica {
 			if(aux.equals(":=")){
 				count = expressao(tokens, count);
 			} else if (aux.equals("(")){
+				count = lista_de_expressoes(tokens,count);
 				
+				if(!tokens.get(count++).getNome().equals(")"))
+					erro("Fecha parentese esperado na linha " + tokens.get(--count).getLinha());
 			} else { 
 				erro("Token nao esperado na linha " + tokens.get(--count).getLinha());
 			}
 		} else if (tokens.get(count).getNome().equals("if")){
-			//TODO: FINALIZAR CONSTRUCAO DE COMANDO
+			count++;
+			count = expressao(tokens,count);
+			
+			if (!tokens.get(count++).getNome().equals("then")){
+				erro("Token then esperado na linha " + tokens.get(--count).getLinha());
+			}
+			
+			count = comando(tokens, count);
+			count = parte_else(tokens, count);			
+		} else if(tokens.get(count).getNome().equals("while")) {
+			count = expressao(tokens, ++count);
+			
+			if(!tokens.get(count++).getNome().equals("do"))
+				erro("Token 'do' esperado na linha " + tokens.get(--count).getLinha());
+			
+			count = comando(tokens, count);
+			
+		} else {
+			erro("Expressao de comando esperada na linha " + tokens.get(count).getLinha());
 		}
 		
 		return count;
@@ -349,8 +459,13 @@ public class ANSintatica {
 			erro("Programa não iniciado com program - linha " + tokens.get(--count).getLinha());
 		
 		count = dec_variaveis(tokens, count);
-			 
-		//TODO: INSERIR DECLARAÇÕES_DE_SUBPROGRAMAS 
+		count = decl_de_subprog(tokens, count);
+		count = comando_composto(tokens, count);
+
+		if(!tokens.get(count++).getNome().equals(".")){
+			erro("Token '.' esperado na linha " + tokens.get(--count).getLinha());
+		}
+		
 	}
 
 	private static ArrayList<Token> obterTokens (String path){
@@ -368,7 +483,6 @@ public class ANSintatica {
             return null;
         }
 
-        // Obtaining file content
         System.out.println("Comeco:");
         
         String str = "";

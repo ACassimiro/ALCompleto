@@ -560,7 +560,7 @@ class Main {
 
 	System.out.println("Numeros de linhas = " + (yyline+1));
 	System.out.println("\nTabela:");
-	System.out.println("\n" + token);
+	System.out.println(token);
 	System.out.println("\n" + ErrorLog);
 	
 
