@@ -28,6 +28,8 @@ public class ANSintatica {
 	}
 	
 	private static int lista_de_expressoes(ArrayList<Token> tokens, int count){
+		System.out.println("Em lista_de_expressoes");
+		
 		ArrayList<String> termoSim = new ArrayList<String>();
 		ArrayList<String> termoNome = new ArrayList<String>();
 		ArrayList<String> sinal = new ArrayList<String>();
@@ -170,16 +172,26 @@ public class ANSintatica {
 	}
 	
 	private static int expressao(ArrayList<Token> tokens, int count){
+		System.out.println("Em expressao");
+		
 		String atual = "";
 		ArrayList<String> op_rel = new ArrayList<String>();
+		op_rel.add("="); op_rel.add("<"); op_rel.add(">"); op_rel.add("<="); op_rel.add(">="); op_rel.add("<>");      
+		
 		int auxCount;
 
+		
 		while(true){
+
+			System.out.println(tokens.get(count).getNome() + " - " + tokens.get(count).getSimbolo() + " - " + tokens.get(count).getLinha());
+			
 			auxCount = count;
 
 			if(op_rel.contains(tokens.get(count).getNome()) && (atual.equals("op_rel") && atual.isEmpty())){
+//				System.out.println(tokens.get(count).getNome() + " - " + tokens.get(count).getSimbolo() + " - " + tokens.get(count).getLinha());
 				erro("Token nao esperado na linha " + tokens.get(count).getLinha());
-			} else if (!op_rel.contains(tokens.get(count).getNome()) && (atual.equals("expressao") || atual.isEmpty())) {
+			} else if (!op_rel.contains(tokens.get(count).getNome()) && atual.equals("expressao")) {
+				System.out.println(tokens.get(count).getNome() + " - " + tokens.get(count).getSimbolo() + " - " + tokens.get(count).getLinha());
 				erro("Token nao esperado na linha " + tokens.get(count).getLinha());
 			}
 			
@@ -208,8 +220,10 @@ public class ANSintatica {
 	}
 	
 	private static int comando(ArrayList<Token> tokens, int count) {
+		System.out.println("Em comando");
+		
 		String aux = "";
-				
+		//TODO: AVERIGUAR TOKEN NÃO ESPERADO NA LINHA 7
 		if(tokens.get(count).getSimbolo().equals("identificador")){
 			count++;
 			aux = tokens.get(count++).getNome();
@@ -357,9 +371,12 @@ public class ANSintatica {
 	}
 	
 	private static int decl_de_subprog(ArrayList<Token> tokens, int count){
+
+		if(!tokens.get(count).getNome().equals("procedure")){
+			return count;
+		}	
 		
-		
-		while(true) {
+		while(true) {			
 			if(!tokens.get(count).getNome().equals("procedure")){
 				break;
 			}		
@@ -393,46 +410,52 @@ public class ANSintatica {
 	
 	private static int lista_decl_variaveis(ArrayList<Token> tokens, int count){
 		String atual;
+
+		atual = "";
 		
 		while(true){
-			atual = "";
-			
-			if(atual.equals("") || !tokens.get(count).getSimbolo().equals("identificador")){
+
+			if((atual.equals("") || atual.equals(";")) && !tokens.get(count).getSimbolo().equals("identificador")){
 				break;
 			}
 			
-			if (tokens.get(count++).getSimbolo().equals("identificador") && (atual.isEmpty() || !atual.equals("identificador")) ){
+			if (tokens.get(count).getSimbolo().equals("identificador") && (atual.isEmpty() || !atual.equals("identificador")) ){
+				count++;
 				atual = "identificador";
 				continue;
-			} else {
-				erro("Token posicionado incorretamente na linha " + tokens.get(--count).getLinha());
+			} else if(tokens.get(count).getSimbolo().equals("identificador") && atual.equals("identificador")) {
+				erro("Token posicionado incorretamente na linha " + tokens.get(count).getLinha());
 			}
 			
-			if (tokens.get(count++).getNome().equals(",")  && !atual.equals(",") && !atual.isEmpty()){
+			if (tokens.get(count).getNome().equals(",")  && !atual.equals(",") && !atual.isEmpty()){
+				count++;
 				atual = ",";
 				continue;
-			}else{
-				erro("Token posicionado incorretamente na linha " + tokens.get(--count).getLinha());
+			}else if (tokens.get(count).getNome().equals(",")  && (atual.equals(",") || atual.isEmpty())){
+				erro("Token posicionado incorretamente na linha " + tokens.get(count).getLinha());
 			}
 			
-			if(tokens.get(count++).getNome().equals(":") && atual.equals("identificador")){
-				if(tokens.get(count++).getNome().equals("real") || tokens.get(count++).getNome().equals("boolean") || tokens.get(count++).getNome().equals("integer")){
+			if(tokens.get(count).getNome().equals(":") && atual.equals("identificador")){
+				count++;
+				if(tokens.get(count).getNome().equals("real") || tokens.get(count).getNome().equals("boolean") || tokens.get(count).getNome().equals("integer")){
+					count++;
 					if(tokens.get(count++).getNome().equals(";")){
+						atual = ";";
 						continue;
 					} else {
-						erro("Delimitador ; esperado na linha" + tokens.get(--count).getLinha());
+						erro("Delimitador ; esperado na linha" + tokens.get(count).getLinha());
 					}
 				} else {
-					erro("Palavra reservada indicadora de tipo esperada na linha " + tokens.get(--count).getLinha());
+					erro("Palavra reservada indicadora de tipo esperada na linha " + tokens.get(count).getLinha());
 				}
-			} else {
+			} else if (tokens.get(count++).getNome().equals(":") && !atual.equals("identificador")){
 				erro("Token posicionado incorretamente na linha " + tokens.get(--count).getLinha());
 			}
 				
 
 			break;
 		}
-		
+				
 		return count;
 	}
 	
@@ -440,8 +463,7 @@ public class ANSintatica {
 		
 		if(tokens.get(count).getNome().equals("var")){
 			count++;
-			
-			lista_decl_variaveis(tokens, count);
+			count = lista_decl_variaveis(tokens, count);
 		}
 		
 		return count;
@@ -455,8 +477,8 @@ public class ANSintatica {
 		if(!tokens.get(count++).getSimbolo().equals("identificador")) 
 			erro("program nao seguido por identificador - linha " + tokens.get(--count).getLinha());
 			
-		if(tokens.get(count++).getNome().equals(";"))
-			erro("Programa não iniciado com program - linha " + tokens.get(--count).getLinha());
+		if(!tokens.get(count++).getNome().equals(";"))
+			erro("Identificador não seguido por ; - linha " + tokens.get(--count).getLinha());
 		
 		count = dec_variaveis(tokens, count);
 		count = decl_de_subprog(tokens, count);
@@ -472,7 +494,9 @@ public class ANSintatica {
 		Scanner input = null;
 		ArrayList<Token> listaTokens = new ArrayList<Token>();
 		
-		 // Trying to create scanner
+
+		System.out.println("Criando Scanner de leitura da tabela de tokens");
+		
         try
         {
         	input = new Scanner(new File(path));
@@ -483,7 +507,7 @@ public class ANSintatica {
             return null;
         }
 
-        System.out.println("Comeco:");
+        System.out.println("Iniciando leitura da tabela");
         
         String str = "";
        
@@ -501,9 +525,11 @@ public class ANSintatica {
             
             listaTokens.add(new Token(str));
         }
+
+        System.out.println("Tokens obtidos com sucesso, encerrando Scanner");
         
         input.close();
-        
+                
         return listaTokens;
 	}
 	
@@ -511,10 +537,14 @@ public class ANSintatica {
 		ArrayList<Token> listaTokens = new ArrayList<Token>();
 		String path = args[0];
 	
+		System.out.println("OBTENDO TOKENS: ");
 		listaTokens = obterTokens(path);
 		
+		System.out.println("\nREALIZANDO ANALISE SINTATICA:");
+
 		inicioPrograma(listaTokens, 0);
-		
+				
+		System.out.println("Analise realizada com sucesso. Nenhum erro foi detectado.");
 		
 	}
 }
