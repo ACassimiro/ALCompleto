@@ -28,8 +28,6 @@ public class ANSintatica {
 	}
 	
 	private static int lista_de_expressoes(ArrayList<Token> tokens, int count){
-		System.out.println("Em lista_de_expressoes");
-		
 		ArrayList<String> termoSim = new ArrayList<String>();
 		ArrayList<String> termoNome = new ArrayList<String>();
 		ArrayList<String> sinal = new ArrayList<String>();
@@ -172,8 +170,6 @@ public class ANSintatica {
 	}
 	
 	private static int expressao(ArrayList<Token> tokens, int count){
-		System.out.println("Em expressao");
-		
 		String atual = "";
 		ArrayList<String> op_rel = new ArrayList<String>();
 		op_rel.add("="); op_rel.add("<"); op_rel.add(">"); op_rel.add("<="); op_rel.add(">="); op_rel.add("<>");      
@@ -183,15 +179,18 @@ public class ANSintatica {
 		
 		while(true){
 
-			System.out.println(tokens.get(count).getNome() + " - " + tokens.get(count).getSimbolo() + " - " + tokens.get(count).getLinha());
-			
 			auxCount = count;
+			
+			if(tokens.get(count).getSimbolo().equals("pal_res")){
+				break;
+			}			
+			
 
 			if(op_rel.contains(tokens.get(count).getNome()) && (atual.equals("op_rel") && atual.isEmpty())){
-//				System.out.println(tokens.get(count).getNome() + " - " + tokens.get(count).getSimbolo() + " - " + tokens.get(count).getLinha());
 				erro("Token nao esperado na linha " + tokens.get(count).getLinha());
-			} else if (!op_rel.contains(tokens.get(count).getNome()) && atual.equals("expressao")) {
-				System.out.println(tokens.get(count).getNome() + " - " + tokens.get(count).getSimbolo() + " - " + tokens.get(count).getLinha());
+			} else if (op_rel.contains(tokens.get(count).getNome()) && !atual.equals("expressao")) {
+				erro("Token nao esperado na linha " + tokens.get(count).getLinha());
+			} else if (tokens.get(count).getNome().equals(";") && !atual.equals("expressao")) {
 				erro("Token nao esperado na linha " + tokens.get(count).getLinha());
 			}
 			
@@ -220,10 +219,9 @@ public class ANSintatica {
 	}
 	
 	private static int comando(ArrayList<Token> tokens, int count) {
-		System.out.println("Em comando");
 		
 		String aux = "";
-		//TODO: AVERIGUAR TOKEN NÃO ESPERADO NA LINHA 7
+	
 		if(tokens.get(count).getSimbolo().equals("identificador")){
 			count++;
 			aux = tokens.get(count++).getNome();
