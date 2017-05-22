@@ -2,6 +2,7 @@ package analiseSemantica;
 
 public class Variavel {
 	private String nome, tipo;
+	private boolean inicializada = false;
 
 	public Variavel(String nome, String tipo) {
 		this.nome = nome;
@@ -25,4 +26,12 @@ public class Variavel {
 		this.tipo = tipo;
 	}
 	
+	public boolean getInicializada() {
+		return inicializada;
+	}
+
+
+	public void setInicializada(boolean inicializada) {
+		this.inicializada = inicializada;
+	}
 }
