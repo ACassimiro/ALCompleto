@@ -55,7 +55,7 @@ public class ANSemantica {
 	}
 	
 	private static String getVarTipo(ArrayList<Variavel> pilhaVar, String nome){
-int count = pilhaVar.size();
+		int count = pilhaVar.size();
 		
 		while(count >= 0){
 			if(pilhaVar.get(count).getNome().equals(nome)) {
@@ -202,6 +202,151 @@ int count = pilhaVar.size();
 		
 		return count;
 	}
+	
+	
+	private static int analiseDeParametros(ArrayList<Token> tokens, ArrayList<Variavel> pilhaVar, String nome, int count, int nivel){
+		ArrayList<String> listOp = new ArrayList<String>();
+		ArrayList<String> pilhaTipos = new ArrayList<String>();
+		ArrayList<String> tiposEsperados = new ArrayList<String>();
+		String atual = "";
+		String tipoAtual = "";
+		String auxTipoAtual = "";
+		boolean flagErro = false;
+		
+		int i = 0;
+		listOp.add("="); listOp.add("<"); listOp.add(">"); listOp.add("<="); listOp.add(">="); listOp.add("<>"); //OP_RELACIONAIS
+		listOp.add("+"); listOp.add("-"); //OP_ADITIVOS
+		listOp.add("*"); listOp.add("/"); //OP_MULTIPLICATIVOS
+		listOp.add("and"); listOp.add("or");
+		
+		
+		
+		for(i = pilhaVar.size() - 1; i < 0; i--){
+			if(pilhaVar.get(i).getNome().equals(nome)){
+				break;
+			}
+		}
+		
+		while(!pilhaVar.get(++i).getNome().equals("-")){
+			pilhaTipos.add(pilhaVar.get(i).getTipo());
+		}
+		
+		i = 0;
+		atual = tokens.get(++count).getNome();
+		while(!atual.equals(")")){
+			
+			if(atual.equals(",")){
+				if(!pilhaTipos.get(0).equals("real") && tipoAtual.equals("integer") && auxTipoAtual.equals("integer")){
+					System.out.println("Erro na paremetrizacao: Operacao aritmetica nao permitida na linha " + tokens.get(count).getLinha());
+					flagErro = true;
+					break;
+				} 
+
+				pilhaTipos.remove(0);
+				atual = tokens.get(++count).getNome();
+				continue;
+
+			}
+			
+			
+			if(tokens.get(count).getSimbolo().equals("identificador")){
+				if(!buscaEmPilha(pilhaVar, atual, nivel)){
+					System.out.println("Variavel " + atual + " nao declarada no escopo na linha " + tokens.get(count).getLinha());
+				} else if (checkVarInicializada(pilhaVar, atual)) {
+					System.out.println("Variavel " + atual + " nao inicializada no escopo na linha " + tokens.get(count).getLinha());					
+				}
+				
+				auxTipoAtual = getVarTipo(pilhaVar, atual);
+				
+			} else if (atual.equals("num_int")){
+				auxTipoAtual = "integer";
+			} else if (atual.equals("num_real")){
+				auxTipoAtual = "realr";
+			} else if (atual.equals("boolean")) {
+				auxTipoAtual = "boolean";
+			} else if (listOp.contains(atual)){
+				if((atual.equals("or") || atual.endsWith("and")) && !tipoAtual.equals("boolean")){
+					System.out.println("Erro na paremetrizacao: Tipo nao booleano em operacao logica na linha " + tokens.get(count).getLinha());
+					flagErro = true;
+					break;
+				} else if((!atual.equals("or") && !atual.endsWith("and")) && tipoAtual.equals("boolean")) {
+					System.out.println("Erro na paremetrizacao: Tipo booleano em operacao aritmetica na linha " + tokens.get(count).getLinha());
+					flagErro = true;
+					break;
+				}
+				
+				atual = tokens.get(++count).getNome();
+				continue;
+			}
+			
+			if(tipoAtual.isEmpty()){
+				tipoAtual = auxTipoAtual;
+			} else if(tipoAtual.equals("integer") && auxTipoAtual.equals("real")){
+				tipoAtual = auxTipoAtual;
+			} 
+			
+			if(pilhaTipos.get(0).equals("boolean")){
+				if(!tipoAtual.equals("boolean") || !auxTipoAtual.equals("boolean")){
+					System.out.println("Erro na paremetrizacao: Tipo nao booleano em um parametro que espera booleano na linha " + tokens.get(count).getLinha());
+					flagErro = true;
+					break;
+				}
+			} else if(pilhaTipos.get(0).equals("integer")){
+				if(tipoAtual.equals("real") || !auxTipoAtual.equals("integer")){
+					System.out.println("Erro na paremetrizacao: Operacao aritmetica nao permitida na linha " + tokens.get(count).getLinha());
+					flagErro = true;
+					break;
+				}
+			} else if(pilhaTipos.get(0).equals("real")){
+				if(tipoAtual.equals("real") || !auxTipoAtual.equals("integer")){
+					System.out.println("Erro na paremetrizacao: Operacao aritmetica nao permitida na linha " + tokens.get(count).getLinha());
+					flagErro = true;
+					break;
+				}
+			}
+						
+			atual = tokens.get(++count).getNome();
+		}
+		
+		if(!flagErro){
+			if(tipoAtual.isEmpty()){
+				tipoAtual = auxTipoAtual;
+			} else if(tipoAtual.equals("integer") && auxTipoAtual.equals("real")){
+				tipoAtual = auxTipoAtual;
+			} 
+			
+			if(pilhaTipos.get(0).equals("boolean")){
+				if(!tipoAtual.equals("boolean") || !auxTipoAtual.equals("boolean")){
+					System.out.println("Erro na paremetrizacao: Tipo nao booleano em um parametro que espera booleano na linha " + tokens.get(count).getLinha());
+					flagErro = true;
+				}
+			} else if(pilhaTipos.get(0).equals("integer")){
+				if(tipoAtual.equals("real") || !auxTipoAtual.equals("integer")){
+					System.out.println("Erro na paremetrizacao: Operacao aritmetica nao permitida na linha " + tokens.get(count).getLinha());
+					flagErro = true;
+				}
+			} else if(pilhaTipos.get(0).equals("real")){
+				if(tipoAtual.equals("real") || !auxTipoAtual.equals("integer")){
+					System.out.println("Erro na paremetrizacao: Operacao aritmetica nao permitida na linha " + tokens.get(count).getLinha());
+					flagErro = true;
+				}
+			} else if(!pilhaTipos.get(0).equals("real") && tipoAtual.equals("integer") && auxTipoAtual.equals("integer")){
+				System.out.println("Erro na paremetrizacao: Operacao aritmetica nao permitida na linha " + tokens.get(count).getLinha());
+				flagErro = true;
+			} 
+		}
+		
+		if(flagErro) {
+			while(!atual.equals(")")){
+				atual = tokens.get(++count).getNome();
+			}
+		}
+		
+
+		return count;
+				
+	}
+	
 
 	private static void analiseDeEscopo(ArrayList<Token> tokens, ArrayList<Variavel> pilhaVar, ArrayList<String> listaProc, int count, int nivel){
 		boolean flagVarEncontrado = false;
@@ -211,7 +356,13 @@ int count = pilhaVar.size();
 			atual = tokens.get(count).getNome();
 			if(atual.equals("procedure")){
 				//CASO: NOVO ESCOPO SENDO DECLARADO
-				listaProc.add(tokens.get(++count).getNome());
+				if(!buscaEmPilha(pilhaVar, tokens.get(++count).getNome(), nivel)){
+					listaProc.add(tokens.get(count).getNome());		
+					pilhaVar.add(new Variavel("$", "$"));
+					pilhaVar.add(new Variavel(tokens.get(count).getNome(), "proc"));
+				} else {
+					System.out.println("Procedimento com identificador ja utilizado no mesmo escopo na linha " + tokens.get(count).getLinha());
+				}
 				analiseDeEscopo(tokens, (ArrayList<Variavel>) pilhaVar.clone(), (ArrayList<String>) listaProc.clone(), ++count, nivel + 1);
 			
 			} else if(atual.equals("var")){
@@ -235,16 +386,43 @@ int count = pilhaVar.size();
 				//CASO: VARIAVEL ENCONTRADA NO PROGRAMA
 				count = analiseDeLinha(tokens, pilhaVar, listaProc, count, nivel);
 				
-			} else if(atual.equals("(") && tokens.get(count - 1).getNome().equals("procedure") && count >= 1){
+			} else if(atual.equals("(") && !tokens.get(count - 1).getNome().equals("if") && !tokens.get(count - 1).getNome().equals("if") && tokens.get(count - 1).getSimbolo().equals("identificador") && count >= 1){
 				//CASO: CHAMADA DE PROCEDIMENTO
-				count++;
-				//TODO: REFAZER CONDIÇÃO E REALIZAR CHECAGEM DE TIPOS DE PARAMETROS
+				if(buscaEmPilha(pilhaVar, tokens.get(count - 1).getNome(), nivel)){
+					count = analiseDeParametros(tokens, pilhaVar, tokens.get(count - 1).getNome(), count, nivel);
+					count++;	
+				} else {
+					System.out.println("Chamada de procedimento com identificador desconhecido na linha " + tokens.get(count++ - 1).getLinha());
+					while(!atual.equals(")")){
+						atual = tokens.get(count++).getNome();
+					}
+				}
+				
 			
 			} else if(atual.equals("(") && tokens.get(count - 1).getSimbolo().equals("identificador") && tokens.get(count - 2).getNome().equals("procedure") && count >= 2){
 				//CASO: DECLAREÇÃO DE PROCEDIMENTO
+				while(!atual.equals(")")){
+					ArrayList<String> auxNomeParam = new ArrayList<String>();
+					
+					if(tokens.get(count).getSimbolo().equals("identificador")){
+						auxNomeParam.add(tokens.get(count).getNome());
+					} else if (atual.equals("integer") || atual.equals("boolean") || atual.equals("real")) {
+						for(String nome : auxNomeParam){
+							pilhaVar.add(new Variavel(nome, atual));
+						}
+					} else if(atual.equals(";")){
+						auxNomeParam = new ArrayList<String>();
+					}
+					
+					atual = tokens.get(++count).getNome();
+				}
+
+				pilhaVar.add(new Variavel("-", "-"));
+				
 				count++;
-				//TODO: CHECAGEM DE TIPOS DE PARAMETROS
 			
+			} else if(atual.equals("if") || atual.equals("while")){
+				//CASO: EXPRESSAO CONDICIONAL
 			}
 			
 			
@@ -268,7 +446,7 @@ int count = pilhaVar.size();
         }
 
         // Obtaining file content
-        System.out.println("Comeco:");
+        System.out.println("Arquivo aberto com sucesso");
         
         String str = "";
        
@@ -278,6 +456,8 @@ int count = pilhaVar.size();
         		break;            	
             }
         }
+        
+        System.out.println("Processando lista de tokens");
         
         while(input.hasNextLine()){
             str = input.nextLine();
@@ -289,6 +469,8 @@ int count = pilhaVar.size();
         
         input.close();
         
+        System.out.println("Tokens obtidos com sucesso");
+        
         return listaTokens;
 	}
 	
@@ -298,10 +480,13 @@ int count = pilhaVar.size();
 		ArrayList<String> listaProc = new ArrayList<String>();
 		
 		String path = args[0];
-	
+
+		System.out.println("OBTENDO ESTRUTURA DE TOKENS:");
 		listaTokens = obterTokens(path);
-		analiseDeEscopo(listaTokens, pilhaVar, listaProc, 3, 0);
 		
+		System.out.println("\nINICIANDO ANALISE SEMANTICA:");
+		analiseDeEscopo(listaTokens, pilhaVar, listaProc, 3, 0);
+		System.out.println("\nAnalise semantica encerrada.");
 		
 		
 	}
