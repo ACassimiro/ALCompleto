@@ -45,12 +45,12 @@ class Main {
    * Translates characters to character classes
    */
   private static final String ZZ_CMAP_PACKED = 
-    "\11\0\1\35\1\2\1\0\1\35\1\1\22\0\1\35\7\0\2\41"+
-    "\2\30\1\41\1\0\1\43\1\37\1\27\1\27\1\27\1\27\1\27"+
-    "\1\27\1\27\1\27\1\27\1\27\1\33\1\41\1\31\1\32\1\31"+
-    "\40\0\1\34\1\0\1\3\1\4\1\5\1\6\1\7\1\10\1\11"+
+    "\11\0\1\36\1\2\1\0\1\36\1\1\22\0\1\36\7\0\2\41"+
+    "\2\31\1\41\1\0\1\43\1\37\1\30\1\30\1\30\1\30\1\30"+
+    "\1\30\1\30\1\30\1\30\1\30\1\34\1\41\1\32\1\33\1\32"+
+    "\40\0\1\35\1\0\1\3\1\4\1\5\1\6\1\7\1\10\1\11"+
     "\1\12\1\13\1\14\1\14\1\15\1\16\1\17\1\20\1\21\1\14"+
-    "\1\22\1\23\1\24\1\25\1\26\1\36\1\14\1\0\1\14\1\40"+
+    "\1\22\1\23\1\24\1\25\1\26\1\27\1\14\1\14\1\14\1\40"+
     "\1\42\1\44\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uff92\0";
 
   /** 
@@ -64,14 +64,14 @@ class Main {
   private static final int [] ZZ_ACTION = zzUnpackAction();
 
   private static final String ZZ_ACTION_PACKED_0 =
-    "\11\0\1\1\2\2\12\3\1\4\2\5\1\6\1\1"+
-    "\1\5\1\7\1\6\1\10\2\11\2\12\2\13\1\14"+
-    "\2\15\2\16\1\17\1\20\1\21\2\22\2\23\1\24"+
-    "\2\25\2\26\1\27\2\3\1\30\10\3\1\0\1\31"+
-    "\7\3\1\0\4\3\1\0\4\3\1\30\3\3";
+    "\11\0\1\1\2\2\14\3\1\4\2\5\1\6\1\5"+
+    "\1\7\1\6\1\10\2\11\2\12\2\13\1\14\2\15"+
+    "\2\16\1\17\1\20\1\21\2\22\2\23\1\24\2\25"+
+    "\2\26\1\27\2\3\1\30\13\3\1\31\16\3\1\32"+
+    "\7\3";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[89];
+    int [] result = new int[93];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -98,19 +98,19 @@ class Main {
   private static final String ZZ_ROWMAP_PACKED_0 =
     "\0\0\0\45\0\112\0\157\0\224\0\271\0\336\0\u0103"+
     "\0\u0128\0\u014d\0\u0172\0\u014d\0\u0197\0\u01bc\0\u01e1\0\u0206"+
-    "\0\u022b\0\u0250\0\u0275\0\u029a\0\u02bf\0\u02e4\0\u0309\0\u014d"+
-    "\0\u032e\0\u032e\0\u0353\0\u0378\0\u014d\0\u014d\0\u014d\0\u039d"+
-    "\0\u014d\0\u014d\0\u03c2\0\u03c2\0\u014d\0\u014d\0\u014d\0\u03e7"+
-    "\0\u03e7\0\u014d\0\u014d\0\u014d\0\u040c\0\u014d\0\u0431\0\u0431"+
-    "\0\u014d\0\u014d\0\u014d\0\u0456\0\u0456\0\u014d\0\u014d\0\u047b"+
-    "\0\u04a0\0\u0197\0\u04c5\0\u04ea\0\u050f\0\u0534\0\u0559\0\u057e"+
-    "\0\u05a3\0\u05c8\0\u05ed\0\u014d\0\u0612\0\u0637\0\u065c\0\u0681"+
+    "\0\u022b\0\u0250\0\u0275\0\u029a\0\u02bf\0\u02e4\0\u0309\0\u032e"+
+    "\0\u0353\0\u014d\0\u0378\0\u0378\0\u039d\0\u014d\0\u014d\0\u014d"+
+    "\0\u03c2\0\u014d\0\u014d\0\u03e7\0\u03e7\0\u014d\0\u014d\0\u014d"+
+    "\0\u040c\0\u040c\0\u014d\0\u014d\0\u014d\0\u0431\0\u014d\0\u0456"+
+    "\0\u0456\0\u014d\0\u014d\0\u014d\0\u047b\0\u047b\0\u014d\0\u014d"+
+    "\0\u04a0\0\u04c5\0\u0197\0\u04ea\0\u050f\0\u0534\0\u0559\0\u057e"+
+    "\0\u05a3\0\u05c8\0\u05ed\0\u0612\0\u0637\0\u065c\0\u014d\0\u0681"+
     "\0\u06a6\0\u06cb\0\u06f0\0\u0715\0\u073a\0\u075f\0\u0784\0\u07a9"+
-    "\0\u07ce\0\u07f3\0\u0818\0\u083d\0\u0862\0\u014d\0\u0887\0\u08ac"+
-    "\0\u08d1";
+    "\0\u07ce\0\u07f3\0\u0818\0\u083d\0\u0862\0\u0197\0\u0887\0\u08ac"+
+    "\0\u08d1\0\u08f6\0\u091b\0\u0940\0\u0965";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[89];
+    int [] result = new int[93];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -134,53 +134,58 @@ class Main {
 
   private static final String ZZ_TRANS_PACKED_0 =
     "\1\12\1\13\1\14\1\15\1\16\1\15\1\17\1\20"+
-    "\3\15\1\21\3\15\1\22\1\15\1\23\1\24\1\15"+
-    "\1\25\1\15\1\26\1\27\1\30\1\31\1\12\1\32"+
-    "\1\12\1\14\1\33\1\34\1\35\1\36\1\30\1\36"+
-    "\1\12\1\37\1\40\1\41\25\37\1\42\1\43\1\37"+
-    "\1\44\1\37\1\41\1\37\1\42\1\37\3\45\1\37"+
-    "\1\46\1\40\1\41\25\46\1\47\1\50\1\46\1\51"+
-    "\1\46\1\41\1\46\1\47\1\46\1\52\1\47\1\53"+
-    "\1\46\27\54\1\55\1\56\1\57\1\54\1\60\3\54"+
-    "\1\56\1\54\3\61\1\54\45\62\1\14\1\40\1\41"+
-    "\32\14\1\41\7\14\1\37\1\40\1\41\25\37\1\63"+
-    "\1\64\1\37\1\65\1\37\1\41\1\37\1\63\1\37"+
-    "\3\66\1\37\111\14\1\67\47\0\1\14\45\0\25\15"+
-    "\4\0\1\15\13\0\4\15\1\70\10\15\1\71\7\15"+
-    "\4\0\1\15\13\0\15\15\1\72\7\15\4\0\1\15"+
-    "\13\0\12\15\1\73\1\15\1\74\10\15\4\0\1\15"+
-    "\13\0\5\15\1\72\6\15\1\75\10\15\4\0\1\15"+
-    "\13\0\15\15\1\76\7\15\4\0\1\15\13\0\17\15"+
-    "\1\77\5\15\4\0\1\15\13\0\4\15\1\100\20\15"+
-    "\4\0\1\15\13\0\7\15\1\101\15\15\4\0\1\15"+
-    "\13\0\1\102\24\15\4\0\1\15\37\0\1\27\47\0"+
-    "\1\30\24\0\1\103\71\0\1\104\7\0\1\41\74\0"+
-    "\1\42\44\0\1\47\41\0\1\55\47\0\1\56\44\0"+
-    "\1\63\15\0\6\15\1\105\16\15\4\0\1\15\13\0"+
-    "\15\15\1\106\7\15\4\0\1\15\13\0\20\15\1\107"+
-    "\4\15\4\0\1\15\13\0\3\15\1\72\21\15\4\0"+
-    "\1\15\13\0\21\15\1\110\3\15\4\0\1\15\13\0"+
-    "\21\15\1\72\3\15\4\0\1\15\13\0\15\15\1\111"+
-    "\7\15\4\0\1\15\13\0\1\112\24\15\4\0\1\15"+
-    "\13\0\4\15\1\113\20\15\4\0\1\15\13\0\17\15"+
-    "\1\72\5\15\4\0\1\15\23\0\1\114\34\0\10\15"+
-    "\1\113\14\15\4\0\1\15\13\0\12\15\1\115\12\15"+
-    "\4\0\1\15\13\0\4\15\1\72\20\15\4\0\1\15"+
-    "\13\0\4\15\1\116\20\15\4\0\1\15\13\0\2\15"+
-    "\1\117\3\15\1\120\16\15\4\0\1\15\13\0\12\15"+
-    "\1\72\12\15\4\0\1\15\13\0\14\15\1\72\10\15"+
-    "\4\0\1\15\25\0\1\121\32\0\4\15\1\122\20\15"+
-    "\4\0\1\15\13\0\6\15\1\123\16\15\4\0\1\15"+
-    "\13\0\4\15\1\124\20\15\4\0\1\15\13\0\17\15"+
-    "\1\125\5\15\4\0\1\15\17\0\1\126\40\0\1\113"+
-    "\24\15\4\0\1\15\13\0\4\15\1\102\20\15\4\0"+
-    "\1\15\13\0\3\15\1\127\21\15\4\0\1\15\13\0"+
-    "\1\130\24\15\4\0\1\15\13\0\22\15\1\131\2\15"+
-    "\4\0\1\15\13\0\13\15\1\72\11\15\4\0\1\15"+
-    "\13\0\17\15\1\107\5\15\4\0\1\15\10\0";
+    "\1\21\2\15\1\22\3\15\1\23\1\15\1\24\1\25"+
+    "\1\15\1\26\1\15\1\27\1\30\1\31\1\32\1\33"+
+    "\1\12\1\34\1\12\1\14\1\35\1\36\1\37\1\32"+
+    "\1\37\1\12\1\40\1\41\1\42\26\40\1\43\1\44"+
+    "\1\40\1\45\1\40\1\42\1\43\1\40\3\46\1\40"+
+    "\1\47\1\41\1\42\26\47\1\50\1\51\1\47\1\52"+
+    "\1\47\1\42\1\50\1\47\1\53\1\50\1\54\1\47"+
+    "\30\55\1\56\1\57\1\60\1\55\1\61\2\55\1\57"+
+    "\1\55\3\62\1\55\45\63\1\14\1\41\1\42\33\14"+
+    "\1\42\6\14\1\40\1\41\1\42\26\40\1\64\1\65"+
+    "\1\40\1\66\1\40\1\42\1\64\1\40\3\67\1\40"+
+    "\111\14\1\70\47\0\1\14\45\0\26\15\4\0\1\15"+
+    "\12\0\4\15\1\71\10\15\1\72\10\15\4\0\1\15"+
+    "\12\0\15\15\1\73\10\15\4\0\1\15\12\0\12\15"+
+    "\1\74\1\15\1\75\11\15\4\0\1\15\12\0\1\76"+
+    "\25\15\4\0\1\15\12\0\5\15\1\73\6\15\1\77"+
+    "\11\15\4\0\1\15\12\0\15\15\1\100\10\15\4\0"+
+    "\1\15\12\0\17\15\1\101\6\15\4\0\1\15\12\0"+
+    "\4\15\1\102\21\15\4\0\1\15\12\0\7\15\1\103"+
+    "\7\15\1\104\6\15\4\0\1\15\12\0\1\105\25\15"+
+    "\4\0\1\15\12\0\7\15\1\106\16\15\4\0\1\15"+
+    "\37\0\1\31\47\0\1\32\50\0\1\107\7\0\1\42"+
+    "\75\0\1\43\44\0\1\50\41\0\1\56\47\0\1\57"+
+    "\44\0\1\64\14\0\6\15\1\110\17\15\4\0\1\15"+
+    "\12\0\15\15\1\111\10\15\4\0\1\15\12\0\20\15"+
+    "\1\112\5\15\4\0\1\15\12\0\3\15\1\73\22\15"+
+    "\4\0\1\15\12\0\12\15\1\113\13\15\4\0\1\15"+
+    "\12\0\21\15\1\114\4\15\4\0\1\15\12\0\21\15"+
+    "\1\73\4\15\4\0\1\15\12\0\15\15\1\115\10\15"+
+    "\4\0\1\15\12\0\1\116\25\15\4\0\1\15\12\0"+
+    "\4\15\1\117\21\15\4\0\1\15\12\0\22\15\1\120"+
+    "\3\15\4\0\1\15\12\0\17\15\1\73\6\15\4\0"+
+    "\1\15\12\0\10\15\1\121\15\15\4\0\1\15\12\0"+
+    "\10\15\1\117\15\15\4\0\1\15\12\0\12\15\1\122"+
+    "\13\15\4\0\1\15\12\0\4\15\1\73\21\15\4\0"+
+    "\1\15\12\0\20\15\1\120\5\15\4\0\1\15\12\0"+
+    "\4\15\1\123\21\15\4\0\1\15\12\0\2\15\1\124"+
+    "\3\15\1\125\17\15\4\0\1\15\12\0\12\15\1\73"+
+    "\13\15\4\0\1\15\12\0\14\15\1\73\11\15\4\0"+
+    "\1\15\12\0\4\15\1\126\21\15\4\0\1\15\12\0"+
+    "\12\15\1\112\13\15\4\0\1\15\12\0\4\15\1\127"+
+    "\21\15\4\0\1\15\12\0\6\15\1\130\17\15\4\0"+
+    "\1\15\12\0\4\15\1\131\21\15\4\0\1\15\12\0"+
+    "\17\15\1\132\6\15\4\0\1\15\12\0\1\117\25\15"+
+    "\4\0\1\15\12\0\4\15\1\105\21\15\4\0\1\15"+
+    "\12\0\3\15\1\133\22\15\4\0\1\15\12\0\1\134"+
+    "\25\15\4\0\1\15\12\0\22\15\1\135\3\15\4\0"+
+    "\1\15\12\0\13\15\1\73\12\15\4\0\1\15\12\0"+
+    "\17\15\1\112\6\15\4\0\1\15\7\0";
 
   private static int [] zzUnpackTrans() {
-    int [] result = new int[2294];
+    int [] result = new int[2442];
     int offset = 0;
     offset = zzUnpackTrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -218,13 +223,12 @@ class Main {
   private static final int [] ZZ_ATTRIBUTE = zzUnpackAttribute();
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
-    "\11\0\1\11\1\1\1\11\13\1\1\11\4\1\3\11"+
+    "\11\0\1\11\1\1\1\11\15\1\1\11\3\1\3\11"+
     "\1\1\2\11\2\1\3\11\2\1\3\11\1\1\1\11"+
-    "\2\1\3\11\2\1\2\11\13\1\1\0\1\11\7\1"+
-    "\1\0\4\1\1\0\4\1\1\11\3\1";
+    "\2\1\3\11\2\1\2\11\16\1\1\11\26\1";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[89];
+    int [] result = new int[93];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -715,123 +719,128 @@ class Main {
           case 1: 
             { ErrorLog += "Erro na linha " + String.valueOf(yyline+1) + ": Caractere '" + yytext() + "' invalido\n";
             }
-          case 26: break;
+          case 27: break;
           case 2: 
             { 
             }
-          case 27: break;
+          case 28: break;
           case 3: 
             { token += String.valueOf(yyline+1) + " : " + yytext() + " - identificador\n";
 			yybegin(VAR);
             }
-          case 28: break;
+          case 29: break;
           case 4: 
             { temp = yytext(); yybegin(N_1);
             }
-          case 29: break;
+          case 30: break;
           case 5: 
             { token +=   String.valueOf(yyline+1) + " : " + yytext() + " - delimitador\n";
             }
-          case 30: break;
+          case 31: break;
           case 6: 
             { token +=   String.valueOf(yyline+1) + " : " + yytext() + " - delimitador\n";
 			//ErrorLog += "Erro na linha " + String.valueOf(yyline+1) +": Ponto avulso\n";
 			//yybegin(ERR);
             }
-          case 31: break;
+          case 32: break;
           case 7: 
             { estadoAtual = "YYINITIAL"; initComent = yyline + 1; flagComent = 1; yybegin(COM_BLOCO);
             }
-          case 32: break;
+          case 33: break;
           case 8: 
             { ErrorLog += "Erro na linha " + String.valueOf(yyline+1) +": Caractere desconhecido\n";
             }
-          case 33: break;
+          case 34: break;
           case 9: 
             { yybegin(YYINITIAL);
             }
-          case 34: break;
+          case 35: break;
           case 10: 
             { token +=   String.valueOf(yyline+1) + " : " + yytext() + " - delimitador\n";	
 			yybegin(YYINITIAL);
             }
-          case 35: break;
+          case 36: break;
           case 11: 
             { token +=   String.valueOf(yyline+1) + " : " + yytext() + " - delimitador\n";
 			yybegin(YYINITIAL);
             }
-          case 36: break;
+          case 37: break;
           case 12: 
             { ErrorLog += "Erro na linha " + String.valueOf(yyline+1) + ": identificadores nao podem comecar com numeros (" + temp + " - " + yytext() + ")\n";
 			yybegin(ERR);
             }
-          case 37: break;
+          case 38: break;
           case 13: 
             { token += String.valueOf(yyline+1) + " : " + temp + " - num_int\n";
 			token += String.valueOf(yyline+1) + " : " + yytext() + " - operador\n";
 			yybegin(YYINITIAL);
             }
-          case 38: break;
+          case 39: break;
           case 14: 
             { token += String.valueOf(yyline+1) + " : " + temp + " - num_int\n";
 			token += String.valueOf(yyline+1) + " : " + yytext() + " - delimitador\n";
 			yybegin(YYINITIAL);
             }
-          case 39: break;
+          case 40: break;
           case 15: 
             { yybegin(N_2);
             }
-          case 40: break;
+          case 41: break;
           case 16: 
             { ErrorLog += "Erro na linha " + String.valueOf(yyline+1) + ": identificadores nao podem começar com numeros ou conter pontos\n";
 			yybegin(ERR);
             }
-          case 41: break;
+          case 42: break;
           case 17: 
             { token += String.valueOf(yyline+1) + " : " + temp + "." + yytext() + " - num_real\n";
 			yybegin(YYINITIAL);
             }
-          case 42: break;
+          case 43: break;
           case 18: 
             { ErrorLog += "Erro na linha " + String.valueOf(yyline+1) + ": delimitadores em um numero tipo float incompleto \n";
-			token += String.valueOf(yyline+1) + " : " + yytext() + " - operador\n";
+			token += String.valueOf(yyline+1) + " : " + yytext() + " - delimitador\n";
 			yybegin(YYINITIAL);
             }
-          case 43: break;
+          case 44: break;
           case 19: 
             { token += String.valueOf(yyline+1) + " : " + yytext() + " - delimitador\n";
 			yybegin(YYINITIAL);
             }
-          case 44: break;
+          case 45: break;
           case 20: 
             { System.out.print(yytext());
             }
-          case 45: break;
+          case 46: break;
           case 21: 
             { token += String.valueOf(yyline+1) + " : " + yytext() + " - operador\n";
 			yybegin(YYINITIAL);
             }
-          case 46: break;
+          case 47: break;
           case 22: 
             { token +=   String.valueOf(yyline+1) + " : " + yytext() + " - delimitador\n";
 			yybegin(YYINITIAL);
 			//ErrorLog += "Erro na linha " + String.valueOf(yyline+1) +": identificadores nao podem conter delimitadores \n";
 			//yybegin(ERR);
             }
-          case 47: break;
+          case 48: break;
           case 23: 
             { flagComent = 0; yybegin(YYINITIAL);
             }
-          case 48: break;
+          case 49: break;
           case 24: 
             { token +=   String.valueOf(yyline+1) + " : " + yytext() + " - pal_res\n";
 			yybegin(PAL_RESERVADA);
             }
-          case 49: break;
+          case 50: break;
           case 25: 
             { yybegin(COM_LINHA);
             }
-          case 50: break;
+          case 51: break;
+          case 26: 
+            { token +=   String.valueOf(yyline+1) + " : " + yytext() + " - boolean\n";
+			yybegin(PAL_RESERVADA);
+            }
+          case 52: break;
           default:
             zzScanError(ZZ_NO_MATCH);
         }

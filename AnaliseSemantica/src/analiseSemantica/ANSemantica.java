@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 public class ANSemantica {
 
-	private static boolean buscaEmPilha(ArrayList<Variavel> pilhaVar, String nome, int nivel){
+	private static boolean buscaEmPilhaMesmoNivel(ArrayList<Variavel> pilhaVar, String nome, int nivel){
 		int ultimoEscopoEncontrado = 0;
 		int escopoAtual = 0;
 		for(Variavel var : pilhaVar){
@@ -20,6 +20,16 @@ public class ANSemantica {
 				} else {
 					ultimoEscopoEncontrado = escopoAtual;
 				}
+			}
+		}		
+		
+		return false;
+	}
+	
+	private static boolean buscaEmPilha(ArrayList<Variavel> pilhaVar, String nome){
+		for(Variavel var : pilhaVar){
+			if(nome.equals(var.getNome())){
+				return true;
 			}
 		}		
 		
@@ -39,7 +49,7 @@ public class ANSemantica {
 	}
 	
 	private static boolean checkVarInicializada(ArrayList<Variavel> pilhaVar, String nome){
-		int count = pilhaVar.size();
+		int count = pilhaVar.size() - 1;
 		
 		while(count >= 0){
 			if(pilhaVar.get(count).getNome().equals(nome)) {
@@ -49,6 +59,7 @@ public class ANSemantica {
 					return false;
 					
 			}
+			count--;
 		}
 		
 		return false;		
@@ -68,6 +79,8 @@ public class ANSemantica {
 	}
 	
 	private static int analiseDeLinha(ArrayList<Token> tokens, ArrayList<Variavel> pilhaVar, ArrayList<String> listProc, int count, int nivel){
+		// System.out.println("Chamando analise de linha");
+		
 		ArrayList<String> listaOpRel = new ArrayList<String>();
 		ArrayList<String> listaOpAdt = new ArrayList<String>();
 		ArrayList<String> listaOpMult = new ArrayList<String>();
@@ -208,6 +221,8 @@ public class ANSemantica {
 	
 	
 	private static int analiseDeParametros(ArrayList<Token> tokens, ArrayList<Variavel> pilhaVar, String nome, int count, int nivel){
+		// System.out.println("Chamando analise de parametros");
+		
 		ArrayList<String> listOp = new ArrayList<String>();
 		ArrayList<String> pilhaTipos = new ArrayList<String>();
 		String atual = "";
@@ -252,7 +267,7 @@ public class ANSemantica {
 			
 			
 			if(tokens.get(count).getSimbolo().equals("identificador")){
-				if(!buscaEmPilha(pilhaVar, atual, nivel)){
+				if(!buscaEmPilha(pilhaVar, atual)){
 					System.out.println("Variavel " + atual + " nao declarada no escopo na linha " + tokens.get(count).getLinha());
 				} else if (checkVarInicializada(pilhaVar, atual)) {
 					System.out.println("Variavel " + atual + " nao inicializada no escopo na linha " + tokens.get(count).getLinha());					
@@ -350,6 +365,8 @@ public class ANSemantica {
 	}
 	
 	private static int analiseDeCondicionais(ArrayList<Token> tokens, ArrayList<Variavel> pilhaVar, int count, int nivel){
+		// System.out.println("Chamando analise de condicionais");
+		
 		ArrayList<String> listaOpRel = new ArrayList<String>();
 		ArrayList<String> listaOpAdt = new ArrayList<String>();
 		ArrayList<String> listaOpMult = new ArrayList<String>();
@@ -373,7 +390,7 @@ public class ANSemantica {
 		while( !atualNome.equals("then") || !atualNome.equals("do") ){
 			
 			if(atualSimbolo.equals("identificador")){
-				if(!buscaEmPilha(pilhaVar, atualNome, nivel)){
+				if(!buscaEmPilha(pilhaVar, atualNome)){
 					System.out.println("Operacao condicional utiliza variavel nao declarada na linha " + tokens.get(count).getLinha());
 					flagErro = true;
 					break;
@@ -478,6 +495,8 @@ public class ANSemantica {
 		
 
 	private static void analiseDeEscopo(ArrayList<Token> tokens, ArrayList<Variavel> pilhaVar, ArrayList<String> listaProc, int count, int nivel){
+		// System.out.println("Chamando analise de escopo");
+		
 		boolean flagVarEncontrado = false;
 		String atual = "";
 		
@@ -485,7 +504,7 @@ public class ANSemantica {
 			atual = tokens.get(count).getNome();
 			if(atual.equals("procedure")){
 				//CASO: NOVO ESCOPO SENDO DECLARADO
-				if(!buscaEmPilha(pilhaVar, tokens.get(++count).getNome(), nivel)){
+				if(!buscaEmPilhaMesmoNivel(pilhaVar, tokens.get(++count).getNome(), nivel)){
 					listaProc.add(tokens.get(count).getNome());		
 					pilhaVar.add(new Variavel("$", "$"));
 					pilhaVar.add(new Variavel(tokens.get(count).getNome(), "proc"));
@@ -504,9 +523,9 @@ public class ANSemantica {
 				//CASO: VAR ENCONTRADO, BUSCAR OBTER VARIÁVEIS
 				flagVarEncontrado = true;
 			
-			} else if(flagVarEncontrado) {
+			} else if(flagVarEncontrado && tokens.get(count).getSimbolo().equals("identificador")) {
 				//CASO: VAR ENCONTRADO, OBTENDO VARIÁVEIS
-				if(buscaEmPilha(pilhaVar, tokens.get(count).getNome(), nivel)) {
+				if(buscaEmPilhaMesmoNivel(pilhaVar, tokens.get(count).getNome(), nivel)) {
 					System.out.println("Variavel " + tokens.get(count).getNome() + " ja declarada neste escopo na linha " + tokens.get(count).getLinha() );
 				} else {
 					pilhaVar.add(new Variavel(tokens.get(count).getNome(), tokens.get(count+2).getNome()));
@@ -517,9 +536,9 @@ public class ANSemantica {
 				//CASO: VARIAVEL ENCONTRADA NO PROGRAMA
 				count = analiseDeLinha(tokens, pilhaVar, listaProc, count, nivel);
 				
-			} else if(atual.equals("(") && !tokens.get(count - 1).getNome().equals("if") && !tokens.get(count - 1).getNome().equals("if") && tokens.get(count - 1).getSimbolo().equals("identificador") && count >= 1){
+			} else if(atual.equals("(") && tokens.get(count - 1).getSimbolo().equals("identificador") && !tokens.get(count - 2).getNome().equals("procedure")){
 				//CASO: CHAMADA DE PROCEDIMENTO
-				if(buscaEmPilha(pilhaVar, tokens.get(count - 1).getNome(), nivel)){
+				if(buscaEmPilha(pilhaVar, tokens.get(count - 1).getNome())){
 					count = analiseDeParametros(tokens, pilhaVar, tokens.get(count - 1).getNome(), count, nivel);
 					count++;	
 				} else {
@@ -531,7 +550,7 @@ public class ANSemantica {
 				
 			
 			} else if(atual.equals("(") && tokens.get(count - 1).getSimbolo().equals("identificador") && tokens.get(count - 2).getNome().equals("procedure") && count >= 2){
-				//CASO: DECLAREÇÃO DE PROCEDIMENTO
+				//CASO: DECLARAÇÃO DE PROCEDIMENTO
 				while(!atual.equals(")")){
 					ArrayList<String> auxNomeParam = new ArrayList<String>();
 					
@@ -539,7 +558,7 @@ public class ANSemantica {
 						auxNomeParam.add(tokens.get(count).getNome());
 					} else if (atual.equals("integer") || atual.equals("boolean") || atual.equals("real")) {
 						for(String nome : auxNomeParam){
-							pilhaVar.add(new Variavel(nome, atual));
+							pilhaVar.add(new Variavel(nome, atual, true));
 						}
 					} else if(atual.equals(";")){
 						auxNomeParam = new ArrayList<String>();

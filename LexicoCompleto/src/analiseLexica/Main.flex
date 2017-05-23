@@ -48,7 +48,7 @@ import java.io.*;
 %eof}
 
 FimDeLinha = \r|\n|\r\n
-Caracteres = a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|x|z
+Caracteres = a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|x|z|y|w
 Numeros = 0|1|2|3|4|5|6|7|8|9
 Operadores = [+|-|/|*|<|>]|"<="|">="|":="
 Ident = {Caracteres}+({Numeros}|{Caracteres}|_)*
@@ -101,6 +101,14 @@ EspacoEmBranco = {FimDeLinha} | [ \t\f]
 	"begin" { 
 			token +=   String.valueOf(yyline+1) + " : " + yytext() + " - pal_res\n";
 			yybegin(PAL_RESERVADA); }
+	"true" { 
+			token +=   String.valueOf(yyline+1) + " : " + yytext() + " - boolean\n";
+			yybegin(PAL_RESERVADA); }
+	"false" { 
+			token +=   String.valueOf(yyline+1) + " : " + yytext() + " - boolean\n";
+			yybegin(PAL_RESERVADA); }
+	
+	
 	
 	{Ident} { 
 			token += String.valueOf(yyline+1) + " : " + yytext() + " - identificador\n";
@@ -208,7 +216,7 @@ EspacoEmBranco = {FimDeLinha} | [ \t\f]
 		
 	{Operadores} {
 			ErrorLog += "Erro na linha " + String.valueOf(yyline+1) + ": delimitadores em um numero tipo float incompleto \n";
-			token += String.valueOf(yyline+1) + " : " + yytext() + " - operador\n";
+			token += String.valueOf(yyline+1) + " : " + yytext() + " - delimitador\n";
 			yybegin(YYINITIAL);
 		}
 		

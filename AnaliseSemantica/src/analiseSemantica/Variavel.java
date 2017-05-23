@@ -9,6 +9,11 @@ public class Variavel {
 		this.tipo = tipo;
 	}	
 	
+	public Variavel(String nome, String tipo, boolean inicializada) {
+		this.nome = nome;
+		this.tipo = tipo;
+		this.inicializada = inicializada;
+	}	
 	
 	public String getNome() {
 		return nome;

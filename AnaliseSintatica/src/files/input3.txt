@@ -1,4 +1,4 @@
-linhas = 8
+linhas = 9
 
 Tabela:
 1 : program - pal_res
@@ -17,11 +17,14 @@ Tabela:
 6 : valor1 - identificador
 6 : := - delimitador
 6 : 10 - num_int
+6 : * - operador
+6 : * - delimitador
+6 : 8 - num_int
 6 : ; - delimitador
 7 : valor2 - identificador
 7 : := - delimitador
-7 : 10.2 - num_real
+7 : 10 - num_int
 7 : ; - delimitador
-8 : end - pal_res
-8 : . - delimitador
+9 : end - pal_res
+9 : . - delimitador
 

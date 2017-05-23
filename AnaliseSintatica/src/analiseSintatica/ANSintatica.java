@@ -118,6 +118,8 @@ public class ANSintatica {
 	}
 	
 	private static int expressao_simples(ArrayList<Token> tokens, int count){
+		// System.out.println("Chamando expressao_simples");
+		
 		ArrayList<String> termoSim = new ArrayList<String>();
 		ArrayList<String> termoNome = new ArrayList<String>();
 		ArrayList<String> sinal = new ArrayList<String>();
@@ -144,8 +146,11 @@ public class ANSintatica {
 			
 			if (sinal.contains(tokens.get(count).getNome())){
 				count++;
-				if( !termoSim.contains(tokens.get(count).getSimbolo()) || !termoNome.contains(tokens.get(count).getNome()))
+				if( termoSim.contains(tokens.get(count).getSimbolo()) || termoNome.contains(tokens.get(count).getNome())){
+					;
+				} else {
 					erro("Esperado fator depois de sinal na linha " + tokens.get(count).getLinha());
+				}
 				
 				count = termo(tokens, count);	
 				atual = "termo";
@@ -170,9 +175,14 @@ public class ANSintatica {
 	}
 	
 	private static int expressao(ArrayList<Token> tokens, int count){
+		// System.out.println("Chamando expressao");
 		String atual = "";
 		ArrayList<String> op_rel = new ArrayList<String>();
 		op_rel.add("="); op_rel.add("<"); op_rel.add(">"); op_rel.add("<="); op_rel.add(">="); op_rel.add("<>");      
+		
+		op_rel.add("+"); op_rel.add("-"); //OP_ADITIVOS
+		op_rel.add("*"); op_rel.add("/"); //OP_MULTIPLICATIVOS
+		op_rel.add("and"); op_rel.add("or");
 		
 		int auxCount;
 
@@ -219,7 +229,7 @@ public class ANSintatica {
 	}
 	
 	private static int comando(ArrayList<Token> tokens, int count) {
-		
+		// System.out.println("Chamando comando");
 		String aux = "";
 	
 		if(tokens.get(count).getSimbolo().equals("identificador")){
@@ -262,6 +272,8 @@ public class ANSintatica {
 	}
 	
 	private static int lista_de_comandos(ArrayList<Token> tokens, int count) {
+		// System.out.println("Chamando lista_de_comandos");
+		
 		ArrayList<String> nomes = new ArrayList<String>();
 		ArrayList<String> simbolos = new ArrayList<String>();
 		
@@ -270,7 +282,6 @@ public class ANSintatica {
 		
 		while( nomes.contains(tokens.get(count).getNome()) || simbolos.contains(tokens.get(count).getSimbolo()) ){
 			count = comando(tokens, count);
-			
 			if(tokens.get(count).getNome().equals(";")){
 				count++;
 			} else {
@@ -283,6 +294,7 @@ public class ANSintatica {
 	
 	
 	private static int comandos_opcionais(ArrayList<Token> tokens, int count) {
+		// System.out.println("Chamando comandos_opcionais");
 		ArrayList<String> nomes = new ArrayList<String>();
 		ArrayList<String> simbolos = new ArrayList<String>();
 		
@@ -300,6 +312,7 @@ public class ANSintatica {
 	
 	
 	private static int comando_composto(ArrayList<Token> tokens, int count) {
+		// System.out.println("Chamando comando_composto");
 		
 		if(tokens.get(count++).getNome().equals("begin")){
 			count = comandos_opcionais(tokens, count);
@@ -317,51 +330,44 @@ public class ANSintatica {
 	
 	
 	private static int lista_de_parametros(ArrayList<Token> tokens, int count){
+		// System.out.println("Chamando lista_de_parametros");
 		String atual = "";
 		
 		
 		while(true){
 			
-			if(!tokens.get(count).getSimbolo().equals("identificador") && atual.equals(";")){
-				erro("Identificador esperado depois do ';' na linha" + tokens.get(count).getLinha());
-			} 
-						
-			if(tokens.get(count++).getSimbolo().equals("identificador") && (atual.isEmpty() || !atual.equals("identificador"))){
-				atual = "identificador";
-				continue;
-			} else {
-				erro("Token nao esperado na linha " + tokens.get(--count).getLinha());
+			if(tokens.get(count).getNome().equals(")")){
+				break;
 			}
 			
-			if(tokens.get(count++).getNome().equals(",") && atual.equals("identificador")){
-				atual = ",";
-				continue;
-			} else {
-				erro("Token nao esperado na linha " + tokens.get(--count).getLinha());
-			}
-			
-			if(tokens.get(count++).getNome().equals(":") && atual.equals("identificador")){
-				atual = ":";
-				continue;
-			} else {
-				erro("Token nao esperado antes de ':' na linha " + tokens.get(--count).getLinha());
-			}
-			
-			if((tokens.get(count++).getNome().equals("integer") || tokens.get(count++).getNome().equals("real") || tokens.get(count++).getNome().equals("boolean")) && atual.equals("identificador")){
-				atual = ":";
-				continue;
-			} else {
-				erro("Token nao esperado antes de ':' na linha " + tokens.get(--count).getLinha());
-			}
-			
-			
-			if(tokens.get(count).getNome().equals(";") && atual.equals("identificador")){
+			if(!tokens.get(count).getSimbolo().equals("tipo") && atual.equals(";")){
+				erro("Identificador esperado depois do ';' na linha " + tokens.get(count).getLinha());
+			} else if(tokens.get(count).getNome().equals(";") && atual.equals("tipo")){
 				atual = ";";
 				count++;
 				continue;
+			} 
+			
+			if(tokens.get(count).getSimbolo().equals("identificador") && (atual.isEmpty() || !atual.equals("identificador"))){
+				count++;
+				atual = "identificador";
+				continue;
+			} else if(tokens.get(count).getNome().equals(",") && atual.equals("identificador")){
+				count++;
+				atual = ",";
+				continue;
+			} else if(tokens.get(count).getNome().equals(":") && atual.equals("identificador")){
+				count++;
+				atual = ":";
+				continue;
+			} else if((tokens.get(count).getNome().equals("integer") || tokens.get(count).getNome().equals("real") || tokens.get(count).getNome().equals("boolean")) && atual.equals(":")){
+				count++;
+				atual = "tipo";
+				continue;
 			} else {
-				break;
+				erro("Token nao esperado na linha " + tokens.get(--count).getLinha());
 			}
+			
 		}
 		
 		return count;
@@ -369,7 +375,8 @@ public class ANSintatica {
 	}
 	
 	private static int decl_de_subprog(ArrayList<Token> tokens, int count){
-
+		// System.out.println("Chamando decl_de_subprog");
+		
 		if(!tokens.get(count).getNome().equals("procedure")){
 			return count;
 		}	
@@ -380,14 +387,13 @@ public class ANSintatica {
 			}		
 			
 			count++;
-			
 			if(tokens.get(count++).getSimbolo().equals("identificador")){
-				if(tokens.get(count++).getNome().equals("(")){
+				if(tokens.get(count).getNome().equals("(")){
+					count++;
 					count = lista_de_parametros(tokens, count);
 					if(!tokens.get(count++).getNome().equals(")"))
-						erro("Fechamento de parentese esperado na linha " + tokens.get(--count).getLinha());
+						erro("Fechamento de parentese esperado na linha  " + tokens.get(--count).getLinha());
 				} 
-				
 				if(!tokens.get(count++).getNome().equals(";")){
 					erro("Esperado token ';' no fim da declaracao de procedimento na linha " + tokens.get(--count).getLinha());
 				}
@@ -396,11 +402,16 @@ public class ANSintatica {
 				erro("Identificador esperado na linha " + tokens.get(--count).getLinha());
 			}
 		}
+
 		
 		count = dec_variaveis(tokens, count);
 		count = decl_de_subprog(tokens, count);
 		count = comando_composto(tokens, count);
-				
+		
+		if(tokens.get(count).getNome().equals("procedure")){
+			count = decl_de_subprog(tokens, count);
+		}
+		
 		return count;
 		
 	}
@@ -412,7 +423,10 @@ public class ANSintatica {
 		atual = "";
 		
 		while(true){
-
+			if(tokens.get(count).getNome().equals("procedure")){
+				break;
+			}
+				
 			if((atual.equals("") || atual.equals(";")) && !tokens.get(count).getSimbolo().equals("identificador")){
 				break;
 			}
@@ -441,7 +455,7 @@ public class ANSintatica {
 						atual = ";";
 						continue;
 					} else {
-						erro("Delimitador ; esperado na linha" + tokens.get(count).getLinha());
+						erro("Delimitador ; esperado na linha " + tokens.get(count).getLinha());
 					}
 				} else {
 					erro("Palavra reservada indicadora de tipo esperada na linha " + tokens.get(count).getLinha());
@@ -468,7 +482,7 @@ public class ANSintatica {
 	}
 	
 	private static void inicioPrograma(ArrayList<Token> tokens, int count){
-		 
+		// System.out.println("Chamando Inicio do programa"); 
 		if(!tokens.get(count++).getNome().equals("program"))
 			erro("Programa nao iniciado com program - linha " + tokens.get(--count).getLinha());
 		
