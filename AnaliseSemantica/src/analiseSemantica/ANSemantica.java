@@ -16,7 +16,6 @@ public class ANSemantica {
 				escopoAtual++;
 			}else if(nome.equals(var.getNome())){
 				if(escopoAtual == ultimoEscopoEncontrado && escopoAtual == nivel){
-					System.out.println("Variavel " + nome + " declarada mais de uma vez no mesmo escopo");
 					return true;
 				} else {
 					ultimoEscopoEncontrado = escopoAtual;
@@ -28,12 +27,13 @@ public class ANSemantica {
 	}
 	
 	private static void setVarInicializada(ArrayList<Variavel> pilhaVar, String nome){
-		int count = pilhaVar.size();
+		int count = pilhaVar.size() - 1;
 		
 		while(count >= 0){
 			if(pilhaVar.get(count).getNome().equals(nome)) {
 				pilhaVar.get(count).setInicializada(true);
 			}
+			count--;
 		}
 		
 	}
@@ -55,12 +55,13 @@ public class ANSemantica {
 	}
 	
 	private static String getVarTipo(ArrayList<Variavel> pilhaVar, String nome){
-		int count = pilhaVar.size();
+		int count = pilhaVar.size() - 1;
 		
 		while(count >= 0){
 			if(pilhaVar.get(count).getNome().equals(nome)) {
 				return pilhaVar.get(count).getTipo();					
 			}
+			count--;
 		}
 		
 		return "";
@@ -75,7 +76,7 @@ public class ANSemantica {
 		boolean flagErro = false;
 		boolean flagSairLoop = false;
 
-		String preVar, posVar, varAtual, tipoAtual;
+		String preVar, posVar, varAtual, tipoAtual = "";
 		
 		listaOpRel.add("="); listaOpRel.add("<"); listaOpRel.add(">"); listaOpRel.add("<="); listaOpRel.add(">="); listaOpRel.add("<>"); //OP_RELACIONAIS
 		listaOpAdt.add("+"); listaOpAdt.add("-"); //OP_ADITIVOS
@@ -92,7 +93,6 @@ public class ANSemantica {
 			posVar = tokens.get(count + 1).getNome();
 					
 			if(posVar.equals(";")) {
-				count--;
 				flagSairLoop = true;
 			} 
 			
@@ -109,12 +109,13 @@ public class ANSemantica {
 						tipoAtual = "integer";
 					} else if (tokens.get(count).getSimbolo().equals("num_real")) {
 						tipoAtual = "real";
-					} else {
+					} else if (tokens.get(count).getSimbolo().equals("boolean")) {
 						tipoAtual = "boolean";
 					}
 				}
 				
 				if( (pilhaTipos.get(0).equals("boolean") && !tipoAtual.equals("boolean")) || (!pilhaTipos.get(0).equals("boolean") && tipoAtual.equals("boolean"))){
+					System.out.println("Tipo atual: " + tipoAtual + " - Pilha de tipos 0: " + pilhaTipos.get(0));
 					System.out.println("Tipos incompativeis na atribuicao da linha " + tokens.get(count).getLinha());
 					flagErro = true;
 					break;
@@ -198,7 +199,9 @@ public class ANSemantica {
 		}	
 		
 		if(flagErro)
-			while(!tokens.get(count++).equals(";")){ }
+			while(!tokens.get(count++).getNome().equals(";")){
+				
+			}
 		
 		return count;
 	}
@@ -207,7 +210,6 @@ public class ANSemantica {
 	private static int analiseDeParametros(ArrayList<Token> tokens, ArrayList<Variavel> pilhaVar, String nome, int count, int nivel){
 		ArrayList<String> listOp = new ArrayList<String>();
 		ArrayList<String> pilhaTipos = new ArrayList<String>();
-		ArrayList<String> tiposEsperados = new ArrayList<String>();
 		String atual = "";
 		String tipoAtual = "";
 		String auxTipoAtual = "";
@@ -347,6 +349,133 @@ public class ANSemantica {
 				
 	}
 	
+	private static int analiseDeCondicionais(ArrayList<Token> tokens, ArrayList<Variavel> pilhaVar, int count, int nivel){
+		ArrayList<String> listaOpRel = new ArrayList<String>();
+		ArrayList<String> listaOpAdt = new ArrayList<String>();
+		ArrayList<String> listaOpMult = new ArrayList<String>();
+		ArrayList<String> listaOpLog = new ArrayList<String>();
+		boolean podeNumero = true;
+		boolean podeOpLog = false;
+		boolean podeBool = true;
+		
+		boolean flagErro = false;
+		String atualNome = "";
+		String atualSimbolo = "";
+		
+		
+		listaOpRel.add("="); listaOpRel.add("<"); listaOpRel.add(">"); listaOpRel.add("<="); listaOpRel.add(">="); listaOpRel.add("<>"); //OP_RELACIONAIS
+		listaOpAdt.add("+"); listaOpAdt.add("-"); //OP_ADITIVOS
+		listaOpMult.add("*"); listaOpMult.add("/"); //OP_MULTIPLICATIVOS
+		listaOpLog.add("and"); listaOpLog.add("or");
+		
+		atualNome = tokens.get(count).getNome();
+		atualSimbolo = tokens.get(count).getSimbolo();
+		while( !atualNome.equals("then") || !atualNome.equals("do") ){
+			
+			if(atualSimbolo.equals("identificador")){
+				if(!buscaEmPilha(pilhaVar, atualNome, nivel)){
+					System.out.println("Operacao condicional utiliza variavel nao declarada na linha " + tokens.get(count).getLinha());
+					flagErro = true;
+					break;
+				} else if (!checkVarInicializada(pilhaVar, atualNome)) {
+					System.out.println("Operacao condicional utiliza variavel nao inicializada na linha " + tokens.get(count).getLinha());
+					flagErro = true;
+					break;
+				}
+				
+				switch (getVarTipo(pilhaVar, atualNome)){
+					case "integer":
+						atualSimbolo = "num_int";
+						break;
+					case "real":
+						atualSimbolo = "num_real";
+						break;
+					case "boolean":
+						atualSimbolo = "boolean";
+				}
+				
+			} 
+
+			if (atualSimbolo.equals("boolean")){
+				if(!podeBool){
+					System.out.println("Operacao condicional tem boolean em uma operação incompativel " + tokens.get(count).getLinha());
+					flagErro = true;
+					break;
+				} else {
+					podeNumero = false;
+					podeOpLog = true;
+				}
+				
+			} else if (atualSimbolo.equals("num_int") || atualSimbolo.equals("num_real")){
+				if(!podeNumero){
+					System.out.println("Operacao condicional tem numero em uma operação incompativel " + tokens.get(count).getLinha());
+					flagErro = true;
+					break;
+				} else if (!podeOpLog){
+					podeBool = false;
+					podeNumero = true;
+				}
+				
+			} else if (listaOpAdt.contains(atualNome) || listaOpMult.contains(atualNome)) {
+				if(podeBool) {
+					System.out.println("Operacao condicional tem boolean em uma operação aritmetica " + tokens.get(count).getLinha());
+					flagErro = true;
+					break;
+				} 
+				
+				podeBool = false;				
+				
+			} else if(listaOpRel.contains(atualNome)){
+				if(podeBool){
+					System.out.println("Operacao condicional tem boolean em uma operação relacional " + tokens.get(count).getLinha());
+					flagErro = true;
+					break;
+				} else {
+					atualNome = tokens.get(count + 1).getNome();
+					atualSimbolo = tokens.get(count + 1).getSimbolo();
+					if(atualSimbolo.equals("identificador") && ( getVarTipo(pilhaVar, atualNome).equals("boolean") ) ){
+						System.out.println("Operacao condicional tem boolean em uma operação relacional " + tokens.get(count).getLinha());
+						flagErro = true;
+						break;
+					} else if (atualSimbolo.equals("boolean")){
+						System.out.println("Operacao condicional tem boolean em uma operação relacional " + tokens.get(count).getLinha());
+						flagErro = true;
+						break;
+					}
+					
+					podeOpLog = true;
+					count++;
+				}
+			} else if (listaOpLog.contains(atualNome)){
+				if(podeOpLog) {
+					podeNumero = true;
+					podeBool = true;
+					podeOpLog = false;
+				} else {
+					System.out.println("Operacao condicional tem operacao logica nao compativel " + tokens.get(count).getLinha());
+					flagErro = true;
+					break;
+				}
+								
+				
+			}
+			
+			atualNome = tokens.get(++count).getNome();
+			atualSimbolo = tokens.get(++count).getSimbolo();
+			
+		}
+		
+		if(flagErro) {
+			while( !atualNome.equals("then") || !atualNome.equals("do") ){
+				atualNome = tokens.get(++count).getNome();
+			}
+		}
+		
+		
+		
+		return count;
+	}
+		
 
 	private static void analiseDeEscopo(ArrayList<Token> tokens, ArrayList<Variavel> pilhaVar, ArrayList<String> listaProc, int count, int nivel){
 		boolean flagVarEncontrado = false;
@@ -365,23 +494,25 @@ public class ANSemantica {
 				}
 				analiseDeEscopo(tokens, (ArrayList<Variavel>) pilhaVar.clone(), (ArrayList<String>) listaProc.clone(), ++count, nivel + 1);
 			
+			} else if(atual.equals("begin")){
+				//CASO: BEGIN ENCONTRADO, PARAR DE OBTER VARIÁVEIS
+				flagVarEncontrado = false;
+				
+			} else if(atual.equals(";") && flagVarEncontrado){
+				;
 			} else if(atual.equals("var")){
 				//CASO: VAR ENCONTRADO, BUSCAR OBTER VARIÁVEIS
 				flagVarEncontrado = true;
 			
-			} else if(flagVarEncontrado = true) {
+			} else if(flagVarEncontrado) {
 				//CASO: VAR ENCONTRADO, OBTENDO VARIÁVEIS
 				if(buscaEmPilha(pilhaVar, tokens.get(count).getNome(), nivel)) {
-					System.out.println("Variavel ja declarada neste escopo");
+					System.out.println("Variavel " + tokens.get(count).getNome() + " ja declarada neste escopo na linha " + tokens.get(count).getLinha() );
 				} else {
 					pilhaVar.add(new Variavel(tokens.get(count).getNome(), tokens.get(count+2).getNome()));
 				}
 				count+=2;
 			
-			} else if(atual.equals("begin")){
-				//CASO: BEGIN ENCONTRADO, PARAR DE OBTER VARIÁVEIS
-				flagVarEncontrado = false;
-				
 			} else if(tokens.get(count).getSimbolo().equals("identificador") && !flagVarEncontrado && !listaProc.contains(atual)){
 				//CASO: VARIAVEL ENCONTRADA NO PROGRAMA
 				count = analiseDeLinha(tokens, pilhaVar, listaProc, count, nivel);
@@ -422,6 +553,7 @@ public class ANSemantica {
 				count++;
 			
 			} else if(atual.equals("if") || atual.equals("while")){
+				count = analiseDeCondicionais(tokens, pilhaVar, ++count, nivel);
 				//CASO: EXPRESSAO CONDICIONAL
 			}
 			
@@ -486,7 +618,7 @@ public class ANSemantica {
 		
 		System.out.println("\nINICIANDO ANALISE SEMANTICA:");
 		analiseDeEscopo(listaTokens, pilhaVar, listaProc, 3, 0);
-		System.out.println("\nAnalise semantica encerrada.");
+		System.out.println("Analise semantica encerrada. Caso nenhum erro tenha sido exibido, o programa esta sem problemas semanticos.");
 		
 		
 	}
