@@ -1,10 +1,5 @@
 program exemplo;
 var a, b: integer;
-  procedure p(x: integer);
-  var b, c: integer;
-  begin
-    b := x + x;
-  end
 
   procedure q;
   var c, d: integer;

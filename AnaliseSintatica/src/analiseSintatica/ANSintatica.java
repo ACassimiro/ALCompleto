@@ -37,7 +37,7 @@ public class ANSintatica {
 		termoSim.add("identificador"); termoSim.add("num_int"); termoSim.add("num_real");
 		termoNome.add("true"); termoNome.add("false"); termoNome.add("("); termoNome.add("not"); termoNome.add(",");
 		sinal.add("+"); sinal.add("-");
-		op_adt.add("+"); op_adt.add("-"); op_adt.add("or");
+		op_adt.add("+"); op_adt.add("-"); op_adt.add("or"); //op_adt.add("->");
 		
 		while (true) {
 			
@@ -182,12 +182,15 @@ public class ANSintatica {
 		
 		op_rel.add("+"); op_rel.add("-"); //OP_ADITIVOS
 		op_rel.add("*"); op_rel.add("/"); //OP_MULTIPLICATIVOS
-		op_rel.add("and"); op_rel.add("or");
+		op_rel.add("and"); op_rel.add("or"); op_rel.add("->");
+		
+		//TODO: MOSTRAR NOVO OPERADOR
 		
 		int auxCount;
 
 		
 		while(true){
+			
 
 			auxCount = count;
 			

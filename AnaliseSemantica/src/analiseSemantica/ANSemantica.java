@@ -94,7 +94,7 @@ public class ANSemantica {
 		listaOpRel.add("="); listaOpRel.add("<"); listaOpRel.add(">"); listaOpRel.add("<="); listaOpRel.add(">="); listaOpRel.add("<>"); //OP_RELACIONAIS
 		listaOpAdt.add("+"); listaOpAdt.add("-"); //OP_ADITIVOS
 		listaOpMult.add("*"); listaOpMult.add("/"); //OP_MULTIPLICATIVOS
-		listaOpLog.add("and"); listaOpLog.add("or");
+		listaOpLog.add("and"); listaOpLog.add("or"); listaOpLog.add("->");
 		
 		while(true){
 			if(flagSairLoop){
@@ -118,6 +118,7 @@ public class ANSemantica {
 				if(tokens.get(count).getSimbolo().equals("identificador")){
 					tipoAtual = getVarTipo(pilhaVar, varAtual);
 				} else {
+					//System.out.println(tokens.get(count).getNome());
 					if(tokens.get(count).getSimbolo().equals("num_int")){
 						tipoAtual = "integer";
 					} else if (tokens.get(count).getSimbolo().equals("num_real")) {
@@ -128,7 +129,7 @@ public class ANSemantica {
 				}
 				
 				if( (pilhaTipos.get(0).equals("boolean") && !tipoAtual.equals("boolean")) || (!pilhaTipos.get(0).equals("boolean") && tipoAtual.equals("boolean"))){
-					System.out.println("Tipo atual: " + tipoAtual + " - Pilha de tipos 0: " + pilhaTipos.get(0));
+//					System.out.println("Tipo atual: " + tipoAtual + " - Pilha de tipos 0: " + pilhaTipos.get(0));
 					System.out.println("Tipos incompativeis na atribuicao da linha " + tokens.get(count).getLinha());
 					flagErro = true;
 					break;
@@ -169,7 +170,12 @@ public class ANSemantica {
 						break;
 					} else {
 						for(String tipo : pilhaTipos){
-							if(!tipo.equals("boolean")){
+							System.out.println("- " + tipo);
+							if(tipo.isEmpty()){
+								continue;
+							} else if(!tipo.equals("boolean")){
+								System.out.println("Nao é vazio: " + tipo);
+								
 								System.out.println("Operador logico incompativel na linha " + tokens.get(count).getLinha());
 								flagErro = true;
 								break;
@@ -192,7 +198,6 @@ public class ANSemantica {
 						if(tipoAtual.equals("integer")) {
 							for(String tipo : pilhaTipos){
 								if(tipo.equals("real")){
-									System.out.println("Tipo incompativel da variavel " + varAtual + " em uma operacao aritmetica na linha " + tokens.get(count).getLinha());
 									flagErro = true;
 									break;
 								}
@@ -211,10 +216,10 @@ public class ANSemantica {
 			count += 2;
 		}	
 		
-		if(flagErro)
-			while(!tokens.get(count++).getNome().equals(";")){
-				
-			}
+		if(flagErro){
+			count-=2;
+			while(!tokens.get(count++).getNome().equals(";")){ }
+		}
 		
 		return count;
 	}

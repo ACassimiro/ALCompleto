@@ -50,7 +50,7 @@ import java.io.*;
 FimDeLinha = \r|\n|\r\n
 Caracteres = a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|x|z|y|w
 Numeros = 0|1|2|3|4|5|6|7|8|9
-Operadores = [+|-|/|*|<|>]|"<="|">="|":="
+Operadores = [+|-|/|*|<|>]|"<="|">="|":="|"->"
 Ident = {Caracteres}+({Numeros}|{Caracteres}|_)*
 EspacoEmBranco = {FimDeLinha} | [ \t\f]
 

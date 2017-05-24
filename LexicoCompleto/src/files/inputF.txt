@@ -1,0 +1,8 @@
+program teste; {programa exemplo}
+
+var
+	valor1: boolean;
+	valor2: real;
+begin
+	valor1 := true -> false;
+end.

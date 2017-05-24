@@ -1,0 +1,25 @@
+linhas = 9
+
+Tabela:
+1 : program - pal_res
+1 : teste - identificador
+1 : ; - delimitador
+3 : var - pal_res
+4 : valor1 - identificador
+4 : : - delimitador
+4 : boolean - pal_res
+4 : ; - delimitador
+5 : valor2 - identificador
+5 : : - delimitador
+5 : real - pal_res
+5 : ; - delimitador
+6 : begin - pal_res
+7 : valor1 - identificador
+7 : := - delimitador
+7 : true - boolean
+7 : -> - delimitador
+7 : false - boolean
+7 : ; - delimitador
+8 : end - pal_res
+8 : . - delimitador
+
